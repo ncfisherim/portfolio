@@ -2,15 +2,18 @@
 import type { Entry } from '../data/site';
 
 interface Props {
+	id: string;
+	title: string;
 	entries: Entry[];
+	class?: string;
 }
-const { entries } = Astro.props;
+const { id, title, entries, class: className = '' } = Astro.props;
 ---
 
-<section id="index" aria-labelledby="index-h" class="scroll-mt-20">
+<section id={id} aria-labelledby={`${id}-h`} class:list={['scroll-mt-20', className]}>
 	<div class="flex items-baseline justify-between border-b border-ink pb-3">
-		<h2 id="index-h" class="text-sm font-medium">Index</h2>
-		<span class="font-mono text-xs text-muted">{entries.length} entries · newest first</span>
+		<h2 id={`${id}-h`} class="text-sm font-medium">{title}</h2>
+		<span class="font-mono text-xs text-muted">{entries.length} {entries.length === 1 ? 'entry' : 'entries'} · newest first</span>
 	</div>
 
 	<!-- Column headings (desktop) -->

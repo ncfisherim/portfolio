@@ -16,6 +16,7 @@ export const profile = {
 
 export type Entry = {
 	id: string;
+	section: 'research' | 'work'; // which list it appears in
 	years: string;
 	title: string;
 	org?: string;
@@ -27,13 +28,15 @@ export type Entry = {
 	link?: { label: string; href: string };
 };
 
-// The Index: newest first.
+// All entries, newest first. `section` decides whether they show under
+// Research Experience or Work Experience.
 export const entries: Entry[] = [
 	{
 		id: 'service',
+		section: 'work',
 		years: '2026—',
-		title: 'Server & food runner head coach',
-		org: 'Ruth’s Chris Steakhouse',
+		title: 'Ruth’s Chris Steakhouse',
+		org: 'Server & food runner head coach',
 		kind: 'Leadership',
 		summary: 'High-volume fine dining, where details like allergens are a safety system.',
 		points: [
@@ -43,6 +46,7 @@ export const entries: Entry[] = [
 	},
 	{
 		id: 'games',
+		section: 'work',
 		years: '2020—',
 		title: 'Independent games',
 		kind: 'Games',
@@ -55,6 +59,7 @@ export const entries: Entry[] = [
 	},
 	{
 		id: 'water',
+		section: 'work',
 		years: '2019–25',
 		title: 'Kitesurfing instructor, assistant manager',
 		org: 'Real Watersports',
@@ -73,6 +78,7 @@ export const entries: Entry[] = [
 	},
 	{
 		id: 'research',
+		section: 'research',
 		years: '2020–22',
 		title: 'Perceptual & cognitive racial bias study',
 		org: 'University of Florida',
@@ -99,6 +105,7 @@ export const entries: Entry[] = [
 	},
 	{
 		id: 'education',
+		section: 'research',
 		years: '2018–22',
 		title: 'BS Psychology, minor in Philosophy',
 		org: 'University of Florida',
