@@ -150,3 +150,12 @@ mark[data-evidence-hit] {
 .media {
 	margin: 0;
 }
+
+/* Cursor: a small rounded kite-orange arrow (white outline so it reads on light and dark).
+   Hotspot at the tip (5 3). Links/buttons keep the normal pointing hand. */
+html {
+	cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath d='M5 3.5v15.2c0 .8.9 1.2 1.5.7l3.1-2.8 2.3 4.9c.3.6 1 .9 1.6.6l1.3-.6c.6-.3.9-1 .6-1.6l-2.3-4.8 4.2-.3c.8-.1 1.2-1 .6-1.6L6.6 2.8C6 2.3 5 2.7 5 3.5z' fill='%23ff4a1c' stroke='%23fff' stroke-width='1.4' stroke-linejoin='round'/%3E%3C/svg%3E") 5 3, auto;
+}
+a, button, summary, [role="button"], label {
+	cursor: pointer;
+}
