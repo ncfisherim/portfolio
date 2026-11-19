@@ -8,6 +8,7 @@ Personal portfolio site. Two goals: (1) ship a real, deeply customizable portfol
 ## Stack
 - Astro (static output) + Tailwind CSS v4 (`src/styles/global.css`, imported in `src/layouts/Layout.astro`)
 - Hosting: Vercel, auto-deploys from GitHub `main` (Vercel CLI not installed; not needed)
+- Domain: https://www.nathanfisher.space (bought via Vercel, Vercel DNS; apex redirects to www)
 - Windows machine; Node 26, npm
 
 ## Commands
