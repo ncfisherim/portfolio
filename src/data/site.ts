@@ -61,8 +61,8 @@ export const entries: Entry[] = [
 		id: 'water',
 		section: 'work',
 		years: '2019–25',
-		title: 'Kitesurfing instructor, assistant manager',
-		org: 'Real Watersports',
+		title: 'Real Watersports',
+		org: 'Kitesurfing instructor, assistant manager',
 		kind: 'Teaching',
 		summary: 'Six and a half years at a watersports school — first running the shop, then teaching on the water.',
 		points: [
