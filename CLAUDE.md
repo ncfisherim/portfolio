@@ -32,11 +32,14 @@ Personal portfolio site. Two goals: (1) ship a real, deeply customizable portfol
 - [x] Phase 4 — Polish: sitemap, robots, canonical, OG image, JSON-LD, a11y, self-hosted fonts — Lighthouse 100/100/100/100
 - [~] Phase 5 — Launch: domain live; analytics + final review pending
 
-## Design ("n = 1", v2)
-Concept: the site is a small study the visitor takes part in — drawn from Nathan's experiment-programming work (jsPsych, IAT, perception research).
-- Signature: `src/components/ReactionTask.astro` — real 5-trial simple-RT task (random 0.9–2.5s foreperiod, false-start detection, event.timeStamp vs rAF onset). Optional; never gates content.
-- Palette: lab-grey paper `#ecebe7`, experiment mid-grey stage `#808080`, one "kite orange" (`--color-kite` for graphics, `--color-kite-ink` for text). Auto light/dark.
-- Type: Funnel Display (lede, summaries) + Funnel Sans (UI/body) + IBM Plex Mono only for real data (ms, years, stats). No decorative uppercase mono labels.
-- Motif: the fixation cross `+` — logo, favicon, and the Index expand control (+ → ×).
-- Structure: conversational lede whose links open Index entries → expandable Index (`<details>`) → Methods sentence → Contact (with copy button).
-- Avoid template tropes: giant name hero, numbered section labels, tag pills, cards/bento, gradient, dark-only.
+## Design (v3)
+Lab-grey + kite-orange minimalism; the name is the hero. History: v2 had a reaction-time "study" and an intro paragraph — both removed by Nathan as too gimmicky / wordy. Don't reintroduce them.
+- Hero (`src/components/Hero.astro`): just the name, anchored at the bottom of the first screen.
+  - Wind: gusts sweep left→right as waves of font weight (Funnel Display wght 300–800, base 340). Cursor/finger acts as wind; fast scroll kicks up a gust. Paused off-screen / hidden tab.
+  - Morph: on scroll the name scales linearly into the fixed header slot `[data-header-name]` and cross-fades into it at the end (pixel-aligned).
+  - `prefers-reduced-motion`: no wind, no scaling (cross-fade only).
+- Palette: lab-grey paper `#ecebe7`, one "kite orange" (`--color-kite` graphics, `--color-kite-ink` text). Auto light/dark.
+- Type: Funnel Display (name, summaries) + Funnel Sans (UI/body) + IBM Plex Mono only for real data (years, stats). No decorative uppercase mono labels.
+- Motif: the fixation cross `+` — favicon and the Index expand control (+ → ×).
+- Structure: Hero → expandable Index (`<details>`) → Methods sentence → Contact (with copy button).
+- Avoid template tropes: numbered section labels, tag pills, cards/bento, gradients, dark-only.

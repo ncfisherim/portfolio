@@ -11,22 +11,8 @@ export const profile = {
 		{ label: 'GitHub', href: 'https://github.com/ncfisherim' },
 		// { label: 'LinkedIn', href: 'https://www.linkedin.com/in/...' },
 	],
-	// One factual line under the intro. Edit freely.
-	currently: 'Currently at Ruth’s Chris Steakhouse. BS Psychology, University of Florida.',
 };
 
-// The intro paragraph. Segments with `to` become links that open that Index entry.
-export const lede: { text: string; to?: string }[] = [
-	{ text: 'I teach myself the tools a problem needs, then build the thing carefully. So far that’s meant a ' },
-	{ text: 'published online experiment', to: 'research' },
-	{ text: ', a handful of ' },
-	{ text: 'games in Unity', to: 'games' },
-	{ text: ', six years on a ' },
-	{ text: 'kitesurfing beach', to: 'water' },
-	{ text: ', and leading a ' },
-	{ text: 'team through the dinner rush', to: 'service' },
-	{ text: '.' },
-];
 
 export type Entry = {
 	id: string;

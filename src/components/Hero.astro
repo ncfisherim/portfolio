@@ -1,0 +1,216 @@
+---
+// The hero: just the name.
+// Two motions (both disabled under prefers-reduced-motion):
+//   1. Wind — gusts sweep across the letters as waves of font weight (Funnel Display's
+//      300–800 wght axis). The cursor/finger acts as wind too, and fast scrolling kicks up a gust.
+//   2. Morph — as you scroll, the name shrinks into the header slot [data-header-name] and hands off.
+interface Props {
+	name: string;
+}
+const { name } = Astro.props;
+const words = name.split(' ');
+---
+
+<section class="hero relative flex min-h-[calc(100svh-4rem)] flex-col justify-end pb-10 sm:pb-14" aria-label="Introduction">
+	<h1 class="name font-display leading-[0.86] tracking-[-0.035em]" data-hero-name>
+		<span class="sr-only">{name}</span>
+		<span aria-hidden="true" class="block origin-top-left will-change-transform" data-hero-inner>
+			{
+				words.map((w, wi) => (
+					<span class="word">
+						{[...w].map((ch) => (
+							<span class="ch" data-ch>{ch}</span>
+						))}
+						{wi < words.length - 1 && <span class="sp"> </span>}
+					</span>
+				))
+			}
+		</span>
+	</h1>
+</section>
+
+<style>
+	.name {
+		font-weight: 340;
+		/* two lines on phones, one line from tablet up */
+		font-size: clamp(3.5rem, 26.5vw, 9.5rem);
+	}
+	.word {
+		display: block;
+		white-space: nowrap;
+	}
+	.sp {
+		display: none;
+	}
+	@media (min-width: 640px) {
+		.name {
+			font-size: min(12.2vw, 10.25rem);
+		}
+		.word {
+			display: inline;
+		}
+		.sp {
+			display: inline;
+		}
+	}
+	.ch {
+		font-weight: var(--w, 340);
+	}
+</style>
+
+<script>
+	const h1 = document.querySelector<HTMLElement>('[data-hero-name]');
+	const inner = document.querySelector<HTMLElement>('[data-hero-inner]');
+	const slot = document.querySelector<HTMLElement>('[data-header-name]');
+	const chars = [...document.querySelectorAll<HTMLElement>('[data-ch]')];
+
+	if (h1 && inner && slot && chars.length) {
+		const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+		const BASE = 340;
+		const SLOT_W = 520; // header name weight (font-display, matches .header-name)
+		const MAX = 800;
+
+		// ── Morph: scale the name toward the header slot as it scrolls up ──────────
+		let p = 0; // 0 = hero, 1 = docked in header
+		let startTop = 0; // h1 document top
+		let range = 1;
+		let scale1 = 0.12;
+		let dx = 0; // horizontal offset between hero name and header slot
+
+		const measure = () => {
+			inner.style.transform = '';
+			const r = h1.getBoundingClientRect();
+			const s = slot.getBoundingClientRect();
+			startTop = r.top + window.scrollY;
+			range = Math.max(1, startTop - s.top); // natural scroll distance until it reaches the slot
+			const fs = parseFloat(getComputedStyle(h1).fontSize);
+			const slotFs = parseFloat(getComputedStyle(slot).fontSize);
+			scale1 = slotFs / fs;
+			dx = s.left - r.left;
+			update();
+		};
+
+		const update = () => {
+			p = Math.min(1, Math.max(0, window.scrollY / range));
+			// linear: the name shrinks steadily as it scrolls up into the header
+			const e = p;
+			const sc = 1 + (scale1 - 1) * e;
+			if (!reduce.matches) inner.style.transform = `translateX(${dx * e}px) scale(${sc})`;
+			// cross-fade into the real header name at the very end
+			const hand = Math.min(1, Math.max(0, (p - 0.86) / 0.14));
+			h1.style.opacity = String(1 - hand);
+			slot.style.opacity = String(hand);
+			slot.style.pointerEvents = hand > 0.5 ? 'auto' : 'none';
+		};
+
+		// ── Wind ──────────────────────────────────────────────────────────────────
+		const n = chars.length;
+		const w = new Float32Array(n).fill(BASE); // current weights
+		let centers: { x: number; y: number }[] = [];
+		const measureCenters = () => {
+			centers = chars.map((c) => {
+				const r = c.getBoundingClientRect();
+				return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
+			});
+		};
+
+		type Gust = { t0: number; dur: number; amp: number; width: number };
+		const gusts: Gust[] = [];
+		const gust = (now: number, amp = 260 + Math.random() * 160) =>
+			gusts.push({ t0: now, dur: 1300 + Math.random() * 700, amp, width: 1.6 + Math.random() * 1.4 });
+		let nextGust = performance.now() + 700; // first gust shortly after load
+
+		let px = -1e4,
+			py = -1e4,
+			pointerT = 0;
+		const onPointer = (e: PointerEvent) => {
+			px = e.clientX;
+			py = e.clientY;
+			pointerT = performance.now();
+		};
+		window.addEventListener('pointermove', onPointer, { passive: true });
+		window.addEventListener('pointerdown', onPointer, { passive: true });
+
+		let lastY = window.scrollY,
+			lastScrollT = performance.now();
+
+		let raf = 0;
+		let running = false;
+		let lastMeasure = 0;
+		const frame = (now: number) => {
+			raf = 0;
+			if (!running) return;
+
+			// fast scroll → a gust
+			const dy = Math.abs(window.scrollY - lastY);
+			const dt = Math.max(16, now - lastScrollT);
+			if (dy / dt > 1.2 && gusts.length < 2) gust(now, 200 + Math.min(260, (dy / dt) * 60));
+			lastY = window.scrollY;
+			lastScrollT = now;
+
+			if (now > nextGust) {
+				gust(now);
+				nextGust = now + 5200 + Math.random() * 4000;
+			}
+			for (let g = gusts.length - 1; g >= 0; g--) if (now - gusts[g].t0 > gusts[g].dur) gusts.splice(g, 1);
+
+			// the hero name settles toward the header weight as it docks
+			const base = BASE + (SLOT_W - BASE) * p;
+			const pointerLive = now - pointerT < 2500 && p < 0.05;
+			if (pointerLive && now - lastMeasure > 250) {
+				measureCenters(); // throttled: reading layout every frame would thrash
+				lastMeasure = now;
+			}
+
+			for (let i = 0; i < n; i++) {
+				let target = base + Math.sin(now / 1400 + i * 0.7) * 10; // faint breathing
+				for (const g of gusts) {
+					// gust front travels left → right, past both ends
+					const front = -3 + ((now - g.t0) / g.dur) * (n + 6);
+					const d = (i - front) / g.width;
+					target += g.amp * Math.exp(-d * d);
+				}
+				if (pointerLive && centers[i]) {
+					const dx = centers[i].x - px,
+						dyy = centers[i].y - py;
+					const R = 160;
+					target += 300 * Math.exp(-(dx * dx + dyy * dyy) / (R * R));
+				}
+				target = Math.min(MAX, target);
+				w[i] += (target - w[i]) * 0.14; // ease toward target
+				chars[i].style.setProperty('--w', w[i].toFixed(0));
+			}
+			raf = requestAnimationFrame(frame);
+		};
+
+		const start = () => {
+			if (running || reduce.matches || document.hidden) return;
+			running = true;
+			measureCenters();
+			raf = requestAnimationFrame(frame);
+		};
+		const stop = () => {
+			running = false;
+			if (raf) cancelAnimationFrame(raf);
+			raf = 0;
+		};
+
+		// Only animate while the hero is on screen
+		new IntersectionObserver(([e]) => (e.isIntersecting && p < 1 ? start() : stop())).observe(h1);
+		document.addEventListener('visibilitychange', () => (document.hidden ? stop() : start()));
+		reduce.addEventListener('change', () => {
+			if (reduce.matches) {
+				stop();
+				chars.forEach((c) => c.style.removeProperty('--w'));
+				inner.style.transform = '';
+			} else start();
+			update();
+		});
+
+		window.addEventListener('scroll', update, { passive: true });
+		window.addEventListener('resize', measure);
+		document.fonts.ready.then(measure);
+		measure();
+		start();
+	}
+</script>

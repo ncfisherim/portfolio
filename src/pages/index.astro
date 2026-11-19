@@ -1,44 +1,25 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import ReactionTask from '../components/ReactionTask.astro';
+import Hero from '../components/Hero.astro';
 import Index from '../components/Index.astro';
-import { profile, lede, entries, methods } from '../data/site';
+import { profile, entries, methods } from '../data/site';
 ---
 
 <Layout>
-	<div class="mx-auto max-w-6xl px-4 sm:px-8 lg:px-12">
-		<header class="flex items-baseline justify-between py-5 text-sm">
-			<h1 class="font-medium">
-				<a href="/" class="group inline-flex items-baseline gap-2">
-					<span class="font-mono text-kite transition-transform duration-300 group-hover:rotate-90" aria-hidden="true">+</span>
-					{profile.name}
-				</a>
-			</h1>
+	<header class="fixed inset-x-0 top-0 z-40 bg-paper/85 backdrop-blur-md">
+		<div class="mx-auto flex h-14 max-w-6xl items-center justify-between px-4 text-sm sm:px-8 lg:px-12">
+			<!-- The hero name shrinks into this slot on scroll (see Hero.astro) -->
+			<a href="/" class="font-display text-[1.0625rem] font-[520] tracking-[-0.01em]" data-header-name>{profile.name}</a>
 			<nav aria-label="Primary" class="flex gap-5 text-muted">
 				<a class="ul" href="#index">Index</a>
 				<a class="ul" href="#contact">Contact</a>
 			</nav>
-		</header>
+		</div>
+	</header>
 
+	<div class="mx-auto max-w-6xl px-4 pt-14 sm:px-8 lg:px-12">
 		<main id="main">
-			<!-- Intro + the experiment -->
-			<section class="grid items-end gap-10 pt-8 pb-16 sm:pt-14 lg:grid-cols-[1fr_minmax(0,24rem)] lg:gap-16 lg:pt-24 lg:pb-28">
-				<div>
-					<p class="max-w-[24ch] font-display text-[clamp(1.75rem,3.6vw,2.85rem)] leading-[1.08] font-[420] tracking-[-0.022em] text-pretty sm:max-w-[30ch]">
-						{
-							lede.map((s) =>
-								s.to ? (
-									<a class="ul" href={`#entry-${s.to}`} data-open={s.to}>{s.text}</a>
-								) : (
-									s.text
-								),
-							)
-						}
-					</p>
-					<p class="mt-6 max-w-md text-[0.9375rem] text-muted">{profile.currently}</p>
-				</div>
-				<ReactionTask />
-			</section>
+			<Hero name={profile.name} />
 
 			<Index entries={entries} />
 
@@ -47,7 +28,7 @@ import { profile, lede, entries, methods } from '../data/site';
 				<p class="max-w-3xl font-display text-xl leading-snug sm:text-2xl">{methods}</p>
 			</section>
 
-			<section id="contact" aria-labelledby="contact-h" class="scroll-mt-6 border-t border-ink pt-6 pb-20 lg:pb-28">
+			<section id="contact" aria-labelledby="contact-h" class="scroll-mt-20 border-t border-ink pt-6 pb-20 lg:pb-28">
 				<h2 id="contact-h" class="text-sm font-medium">Contact</h2>
 				<p class="mt-10 text-muted sm:mt-14">The easiest way to reach me:</p>
 				<div class="mt-2 flex flex-wrap items-baseline gap-x-6 gap-y-3">
