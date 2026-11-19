@@ -103,3 +103,18 @@ body {
 		animation-duration: 0s !important;
 	}
 }
+
+/* Skills → proof: entries light up while a skill is previewed, and flash after a jump */
+.entry[data-proof-hl] > summary {
+	background: color-mix(in oklab, var(--color-kite) 9%, transparent);
+}
+.entry[data-proof-hl] .cross {
+	color: var(--color-kite);
+}
+.entry[data-flash] > summary {
+	animation: proof-flash 2.2s ease-out;
+}
+@keyframes proof-flash {
+	0%, 30% { background: color-mix(in oklab, var(--color-kite) 18%, transparent); }
+	100% { background: transparent; }
+}

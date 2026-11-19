@@ -43,5 +43,5 @@ Lab-grey + kite-orange minimalism; the name is the hero. History: v2 had a react
 - Palette: lab-grey paper `#ecebe7`, one "kite orange" (`--color-kite` graphics, `--color-kite-ink` text). Auto light/dark.
 - Type: Funnel Display (name, summaries) + Funnel Sans (UI/body) + IBM Plex Mono only for real data (years, stats). No decorative uppercase mono labels.
 - Motif: the fixation cross `+` — favicon and the Index expand control (+ → ×).
-- Structure: Hero → Research Experience → Work Experience (both `Index.astro`, expandable `<details>`; entries pick a list via `section` in site.ts) → Methods sentence → Contact (with copy button).
+- Structure: Hero → Research Experience → Work Experience (both `Index.astro`, expandable `<details>`; entries pick a list via `section` in site.ts) → Skills (grouped; each skill links to its proof entries via `proof` ids; one gust on scroll-in) → Contact (with copy button).
 - Avoid template tropes: numbered section labels, tag pills, cards/bento, gradients, dark-only.

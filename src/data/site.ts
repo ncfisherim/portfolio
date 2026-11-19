@@ -117,6 +117,46 @@ export const entries: Entry[] = [
 	},
 ];
 
-// Rendered as a sentence, not a tag cloud.
-export const methods =
-	'I write JavaScript, C#, and MATLAB; build in Unity and Blender; design and run human-subjects studies with ICH-GCP in mind; clean data until it’s boring; and speak Brazilian Portuguese.';
+// Skills, grouped. `proof` lists the entry ids (above) where the skill was used —
+// hovering a skill highlights those entries; clicking/tapping jumps to them and opens them.
+// Skills without proof are shown as plain text.
+export type Skill = { name: string; proof?: string[] };
+export const skills: { group: string; items: Skill[] }[] = [
+	{
+		group: 'Programming',
+		items: [
+			{ name: 'JavaScript', proof: ['research'] },
+			{ name: 'C#', proof: ['games'] },
+			{ name: 'MATLAB', proof: ['research'] },
+		],
+	},
+	{
+		group: 'Research',
+		items: [
+			{ name: 'Experiment design', proof: ['research'] },
+			{ name: 'Human-subjects research', proof: ['research'] },
+			{ name: 'Data cleaning', proof: ['research'] },
+			{ name: 'ICH-GCP' },
+		],
+	},
+	{
+		group: 'Tools',
+		items: [
+			{ name: 'jsPsych', proof: ['research'] },
+			{ name: 'Unity', proof: ['games'] },
+			{ name: 'Blender', proof: ['games'] },
+		],
+	},
+	{
+		group: 'People',
+		items: [
+			{ name: 'Team leadership', proof: ['service', 'water'] },
+			{ name: 'Training & coaching', proof: ['water', 'service'] },
+			{ name: 'Safety briefings', proof: ['water', 'service'] },
+		],
+	},
+	{
+		group: 'Languages',
+		items: [{ name: 'Brazilian Portuguese' }],
+	},
+];
