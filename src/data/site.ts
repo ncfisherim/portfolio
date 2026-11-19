@@ -142,8 +142,9 @@ export const entries: Entry[] = [
 //   entries; clicking/tapping jumps to them and opens them.
 // - `evidence`: exact phrases inside those entries to highlight after the jump. Defaults to the
 //   skill name itself. Keep them word-for-word with the entry text, or nothing gets highlighted.
+// - `note`: optional muted qualifier after the name, e.g. a language level.
 // Skills without proof are shown as plain text.
-export type Skill = { name: string; proof?: string[]; evidence?: string[] };
+export type Skill = { name: string; note?: string; proof?: string[]; evidence?: string[] };
 export const skills: { group: string; items: Skill[] }[] = [
 	{
 		group: 'Programming',
@@ -204,6 +205,9 @@ export const skills: { group: string; items: Skill[] }[] = [
 	},
 	{
 		group: 'Languages',
-		items: [{ name: 'English' }, { name: 'Brazilian Portuguese' }],
+		items: [
+			{ name: 'English', note: 'native' },
+			{ name: 'Brazilian Portuguese', note: 'conversational' },
+		],
 	},
 ];
