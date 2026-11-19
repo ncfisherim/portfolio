@@ -92,7 +92,7 @@ export const entries: Entry[] = [
 		media: [
 			{
 				src: kitesurfing,
-				alt: 'A kitesurfer mid-jump high above a choppy turquoise sea, holding the board out to one side.',
+				alt: 'Black-and-white photo of Nathan Fisher kitesurfing, mid-jump high above a choppy sea, holding the board out to one side.',
 			},
 		],
 	},
