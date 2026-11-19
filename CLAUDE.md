@@ -43,7 +43,7 @@ Lab-grey + kite-orange minimalism; the name is the hero. History: v2 had a react
   - `prefers-reduced-motion`: no wind, no particles, no scaling (cross-fade only).
   - Performance rule: in the frame loop and scroll handler, do ALL layout reads (scrollY, getBoundingClientRect, offsetLeft) first, then style writes. Reading after writing forced ~1s of reflow before this was fixed.
   - Docking reads the name's live left edge (it is centered and its width changes with weight) — keep that, or docking drifts.
-  - Scroll cue: just "see more" (lowercase, muted, no +) gently bobbing up and down at the bottom of the hero, links to #research, fades out on scroll. Bob is off under reduced motion.
+  - Scroll cue: just "see my work" (lowercase, muted, no +) gently bobbing up and down at the bottom of the hero, links to #research, fades out on scroll. Bob is off under reduced motion.
 - Palette: lab-grey paper `#ecebe7`, one "kite orange" (`--color-kite` graphics, `--color-kite-ink` text). Auto light/dark.
 - Section headings (Research Experience, Work Experience, Skills, Contact) are kite-ink with a 2px kite rule — 2px, not 1px: a 1px rule on a half-pixel blurs to grey on standard-DPI screens. Entry titles stay ink.
 - Type: Funnel Display (name, summaries) + Funnel Sans (UI/body) + IBM Plex Mono only for real data (years, stats). No decorative uppercase mono labels.
