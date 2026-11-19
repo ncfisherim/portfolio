@@ -74,7 +74,15 @@ const words = name.split(' ');
 		height: calc(100% + 3.5rem);
 		pointer-events: none;
 	}
+	/* The hero is clickable (bursts): crosshair cursor, no accidental text selection */
+	.hero {
+		cursor: crosshair;
+		-webkit-user-select: none;
+		user-select: none;
+		-webkit-tap-highlight-color: transparent;
+	}
 	.cue {
+		cursor: pointer;
 		position: absolute;
 		left: 50%;
 		bottom: 1.25rem;
@@ -221,6 +229,39 @@ const words = name.split(' ');
 		window.addEventListener('touchend', endTouch, { passive: true });
 		window.addEventListener('touchcancel', endTouch, { passive: true });
 
+		// Bursts: a mouse click, or a *tap* (finger barely moved, lifted quickly) — so starting a
+		// scroll never fires one. Touch is detected directly because iOS doesn't send clicks on
+		// non-interactive areas reliably. Links/buttons in the hero (the scroll cue) are excluded.
+		const inHero = (t: EventTarget | null) =>
+			t instanceof Element && !!t.closest('[data-hero]') && !t.closest('a, button');
+		let tap = { x: 0, y: 0, t: 0, ok: false };
+		let lastTapBurst = 0;
+		window.addEventListener(
+			'touchstart',
+			(e) => {
+				const t = e.touches[0];
+				tap = { x: t.clientX, y: t.clientY, t: performance.now(), ok: e.touches.length === 1 && inHero(e.target) };
+			},
+			{ passive: true },
+		);
+		window.addEventListener(
+			'touchend',
+			(e) => {
+				const t = e.changedTouches[0];
+				if (!t || !tap.ok) return;
+				if (performance.now() - tap.t < 350 && Math.hypot(t.clientX - tap.x, t.clientY - tap.y) < 12) {
+					burst(t.clientX, t.clientY);
+					lastTapBurst = performance.now();
+				}
+			},
+			{ passive: true },
+		);
+		hero.addEventListener('click', (e) => {
+			if (performance.now() - lastTapBurst < 800) return; // already handled as a tap
+			if (!inHero(e.target)) return;
+			burst(e.clientX, e.clientY);
+		});
+
 		// ── Letters ───────────────────────────────────────────────────────────────
 		const w = new Float32Array(n).fill(BASE);
 		let centers: { x: number; y: number }[] = [];
@@ -237,17 +278,62 @@ const words = name.split(' ');
 			H = 0,
 			cLeft = 0,
 			cTop = 0;
-		type P = { x: number; y: number; z: number; vx: number; vy: number; ph: number; hot: boolean };
+		type P = { x: number; y: number; z: number; vx: number; vy: number; g: number; ph: number; hot: boolean };
 		const parts: P[] = [];
 		const spawn = (anywhere: boolean): P => ({
-			x: anywhere ? Math.random() * W : -30 - Math.random() * 60,
+			x: anywhere ? Math.random() * W : -20 - Math.random() * 60,
 			y: Math.random() * H,
 			z: 0.35 + Math.random() * 0.65, // depth: nearer = faster, bigger, darker
 			vx: 0,
 			vy: 0,
+			g: 0,
 			ph: Math.random() * Math.PI * 2,
 			hot: Math.random() < 0.07, // a few kite-orange ones
 		});
+		// ── Click / tap bursts ──────────────────────────────────────────────────
+		// A ring of streaks flies out from the point, drags to a stop, drifts off on the breeze.
+		// Nearby ambient streaks get shoved outward and nearby letters pulse heavier.
+		type Spark = { x: number; y: number; vx: number; vy: number; t0: number; life: number; hot: boolean; z: number };
+		const sparks: Spark[] = [];
+		const pulses: { x: number; y: number; t0: number }[] = []; // viewport coords
+		const burst = (clientX: number, clientY: number) => {
+			if (reduce.matches) return;
+			const now = performance.now();
+			const x = clientX - cLeft,
+				y = clientY - (cTop - window.scrollY);
+			const count = W < 640 ? 22 : 30;
+			for (let i = 0; i < count; i++) {
+				const a = (i / count) * Math.PI * 2 + Math.random() * 0.35;
+				const sp = 2.5 + Math.random() * 5.5;
+				sparks.push({
+					x, y,
+					vx: Math.cos(a) * sp,
+					vy: Math.sin(a) * sp,
+					t0: now,
+					life: 700 + Math.random() * 650,
+					hot: Math.random() < 0.3,
+					z: 0.5 + Math.random() * 0.5,
+				});
+			}
+			if (sparks.length > 160) sparks.splice(0, sparks.length - 160);
+			// shockwave through the ambient field
+			for (const q of parts) {
+				const dx = q.x - x,
+					dy = q.y - y,
+					d = Math.hypot(dx, dy) || 1;
+				if (d < 180) {
+					const f = (1 - d / 180) * 5;
+					q.vx += (dx / d) * f;
+					q.vy += (dy / d) * f * 0.8;
+				}
+			}
+			pulses.push({ x: clientX, y: clientY, t0: now });
+			if (pulses.length > 4) pulses.shift();
+			measureCenters(); // safe here: an input event, before this frame's writes
+			lastMeasure = now;
+			start();
+		};
+
 		let ink = '#121211',
 			kite = '#ff4a1c';
 		const readColors = () => {
@@ -265,7 +351,7 @@ const words = name.split(' ');
 			canvas!.width = Math.round(W * dpr);
 			canvas!.height = Math.round(H * dpr);
 			ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-			const target = Math.round(Math.min(150, Math.max(40, (W * H) / 9000)));
+			const target = Math.round(Math.min(150, Math.max(60, (W * H) / 9000)));
 			while (parts.length < target) parts.push(spawn(true));
 			parts.length = target;
 		}
@@ -301,7 +387,8 @@ const words = name.split(' ');
 			const pointerLive =
 				(touching || now - pointerT < (lastWasTouch ? 400 : 2500)) && p < 0.7;
 			// Letters move while scrolling/touching, so re-measure every frame then; otherwise throttle.
-			if (pointerLive && (touching || p > 0 || now - lastMeasure > 250)) {
+			for (let k = pulses.length - 1; k >= 0; k--) if (now - pulses[k].t0 > 1200) pulses.splice(k, 1);
+			if ((pointerLive || pulses.length) && (touching || p > 0 || now - lastMeasure > 250)) {
 				measureCenters();
 				lastMeasure = now;
 			}
@@ -323,6 +410,13 @@ const words = name.split(' ');
 						ddy = centers[i].y - py;
 					target += 300 * Math.exp(-(ddx * ddx + ddy * ddy) / (windR * windR));
 				}
+				for (const pu of pulses) {
+					if (!centers[i]) break;
+					const ddx = centers[i].x - pu.x,
+						ddy = centers[i].y - pu.y,
+						env = Math.exp(-(now - pu.t0) / 320); // quick hit, quick decay
+					target += 340 * env * Math.exp(-(ddx * ddx + ddy * ddy) / (windR * windR * 1.4));
+				}
 				target = Math.min(MAX, target);
 				w[i] += (target - w[i]) * 0.14;
 				chars[i].style.setProperty('--w', w[i].toFixed(0));
@@ -333,19 +427,28 @@ const words = name.split(' ');
 			if (p < 0.56) {
 				ctx.clearRect(0, 0, W, H);
 				const letterPx = nameWidth / n;
+				const narrow = Math.min(1, 0.5 + W / 1600); // gusts push a bit less on phones
 				const gx = gusts.map((g) => ({
 					x: nameLeft - cLeft + front(g, now) * letterPx, // gust front in canvas px
 					s: g.width * letterPx * 1.6,
 					a: g.amp / 400,
+					// The front's own speed (px/frame). Streaks are never pushed faster than 60% of
+					// it — otherwise on narrow screens they "surf" the front and bunch into one clump.
+					cap: 0.6 * (((n + 6) * letterPx) / (g.dur / 16.67)),
 				}));
 				const pcx = px - cLeft,
 					pcy = py - (cTop - sy);
 				for (const q of parts) {
-					let target = 0.45 + q.z * 0.9; // steady breeze
+					// Gusts don't change a streak's drift speed (that redistributes them into clumps on
+					// narrow screens). Instead `q.g` — local gust strength — stretches the streak and
+					// surges it slightly forward, then eases back. Positions stay evenly spread.
+					let boost = 0;
 					for (const g of gx) {
 						const d = (q.x - g.x) / g.s;
-						target += g.a * 9 * q.z * Math.exp(-d * d);
+						boost += Math.min(g.cap, g.a * 9 * q.z * narrow) * Math.exp(-d * d);
 					}
+					q.g += (boost - q.g) * 0.12 * dt;
+					const target = 0.45 + q.z * 0.9; // steady breeze
 					q.vx += (target - q.vx) * 0.07 * dt;
 					if (pointerLive) {
 						const ddx = q.x - pcx,
@@ -360,15 +463,46 @@ const words = name.split(' ');
 					q.vy *= 0.9;
 					q.x += q.vx * dt;
 					q.y += (Math.sin(now / 1100 + q.ph) * 0.18 * q.z + q.vy) * dt;
-					if (q.x > W + 40 || q.y < -20 || q.y > H + 20) Object.assign(q, spawn(false));
+					// Off the right edge: wrap straight back in on the left (keeps the field evenly dense).
+					// Off top/bottom: a fresh streak from the left.
+					if (q.x > W + 40) {
+						q.x -= W + 80;
+						q.y = Math.random() * H;
+						q.vy = 0;
+					} else if (q.y < -20 || q.y > H + 20) Object.assign(q, spawn(false));
 
-					const len = 3 + q.vx * 5; // faster → longer streak
+					const len = 3 + (q.vx + q.g) * 5; // faster or gustier → longer streak
+					const xd = q.x + q.g * 4; // small forward surge inside a gust
 					ctx.globalAlpha = (q.hot ? 0.55 : 0.12 + 0.22 * q.z) * Math.min(1, (q.x + 30) / 120);
 					ctx.strokeStyle = q.hot ? kite : ink;
 					ctx.lineWidth = 0.6 + q.z * 0.9;
 					ctx.beginPath();
-					ctx.moveTo(q.x - len, q.y);
-					ctx.lineTo(q.x, q.y);
+					ctx.moveTo(xd - len, q.y);
+					ctx.lineTo(xd, q.y);
+					ctx.stroke();
+				}
+
+				// burst sparks: drag to a stop, then drift right on the breeze, fading out
+				const drag = Math.pow(0.93, dt);
+				for (let k = sparks.length - 1; k >= 0; k--) {
+					const s = sparks[k];
+					const age = (now - s.t0) / s.life;
+					if (age >= 1) {
+						sparks.splice(k, 1);
+						continue;
+					}
+					s.vx = s.vx * drag + 0.05 * dt;
+					s.vy = s.vy * drag;
+					s.x += s.vx * dt;
+					s.y += s.vy * dt;
+					const sp = Math.hypot(s.vx, s.vy) || 1;
+					const len = 2 + sp * 3.2; // streak points back along its motion
+					ctx.globalAlpha = (1 - age) * (s.hot ? 0.9 : 0.6);
+					ctx.strokeStyle = s.hot ? kite : ink;
+					ctx.lineWidth = 0.8 + s.z * 1.1;
+					ctx.beginPath();
+					ctx.moveTo(s.x - (s.vx / sp) * len, s.y - (s.vy / sp) * len);
+					ctx.lineTo(s.x, s.y);
 					ctx.stroke();
 				}
 				ctx.globalAlpha = 1;
