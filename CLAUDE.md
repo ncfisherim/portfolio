@@ -36,7 +36,7 @@ Personal portfolio site. Two goals: (1) ship a real, deeply customizable portfol
 ## Design (v3)
 Lab-grey + kite-orange minimalism; the name is the hero. History: v2 had a reaction-time "study" and an intro paragraph — both removed by Nathan as too gimmicky / wordy. Don't reintroduce them.
 - Hero (`src/components/Hero.astro`): just the name, centered in the first screen.
-  - Wind: gusts sweep left→right as waves of font weight (Funnel Display wght 300–800, base 340). Cursor/finger acts as wind; fast scroll kicks up a gust. Paused off-screen / hidden tab.
+  - Wind: gusts sweep left→right as waves of font weight (Funnel Display wght 300–800, base 340). Cursor acts as wind; on phones a finger does too, including while scrolling (uses touchstart/touchmove, since pointer events get cancelled once a scroll starts). Pointer effect stays live while p < 0.7. Fast scroll kicks up a gust. Paused off-screen / hidden tab.
   - Particles: canvas of faint wind streaks (a few kite-orange) drifting left→right behind the name; gusts are shared with the letters, so streaks speed up/stretch where the gust front is. Pointer scatters them. Fade out as the name docks.
   - Morph: on scroll the name scales linearly into the fixed header slot `[data-header-name]` and cross-fades into it at the end (pixel-aligned).
   - `prefers-reduced-motion`: no wind, no particles, no scaling (cross-fade only).

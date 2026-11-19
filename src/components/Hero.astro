@@ -189,14 +189,37 @@ const words = name.split(' ');
 
 		let px = -1e4,
 			py = -1e4,
-			pointerT = 0;
+			pointerT = 0,
+			touching = false,
+			lastWasTouch = false;
 		const onPointer = (e: PointerEvent) => {
+			if (e.pointerType === 'touch') return; // touches are handled below
 			px = e.clientX;
 			py = e.clientY;
 			pointerT = performance.now();
+			lastWasTouch = false;
 		};
 		window.addEventListener('pointermove', onPointer, { passive: true });
 		window.addEventListener('pointerdown', onPointer, { passive: true });
+		// Touch: pointer events are cancelled once the browser starts scrolling, but touch
+		// events keep arriving — so a finger keeps acting as wind while you scroll.
+		const onTouch = (e: TouchEvent) => {
+			const t = e.touches[0];
+			if (!t) return;
+			px = t.clientX;
+			py = t.clientY;
+			pointerT = performance.now();
+			touching = true;
+			lastWasTouch = true;
+		};
+		window.addEventListener('touchstart', onTouch, { passive: true });
+		window.addEventListener('touchmove', onTouch, { passive: true });
+		const endTouch = () => {
+			touching = false;
+			pointerT = performance.now(); // let the effect fade out briefly after lifting
+		};
+		window.addEventListener('touchend', endTouch, { passive: true });
+		window.addEventListener('touchcancel', endTouch, { passive: true });
 
 		// ── Letters ───────────────────────────────────────────────────────────────
 		const w = new Float32Array(n).fill(BASE);
@@ -273,12 +296,18 @@ const words = name.split(' ');
 			for (let g = gusts.length - 1; g >= 0; g--) if (now - gusts[g].t0 > gusts[g].dur) gusts.splice(g, 1);
 
 			// ── READ phase: all layout reads happen here, before any style writes ──
-			const pointerLive = now - pointerT < 2500 && p < 0.05;
-			if (pointerLive && now - lastMeasure > 250) {
-				measureCenters(); // throttled
+			// Mouse: live for 2.5s after it moves. Finger: live while down + 0.4s after lifting.
+			// Either way it keeps working while the name is still big (during the scroll morph).
+			const pointerLive =
+				(touching || now - pointerT < (lastWasTouch ? 400 : 2500)) && p < 0.7;
+			// Letters move while scrolling/touching, so re-measure every frame then; otherwise throttle.
+			if (pointerLive && (touching || p > 0 || now - lastMeasure > 250)) {
+				measureCenters();
 				lastMeasure = now;
 			}
 			if (p > 0) readLeft();
+
+			const windR = Math.min(160, window.innerWidth * 0.32); // smaller "hand" on phones
 
 			// ── WRITE phase ──
 			// letters
@@ -292,7 +321,7 @@ const words = name.split(' ');
 				if (pointerLive && centers[i]) {
 					const ddx = centers[i].x - px,
 						ddy = centers[i].y - py;
-					target += 300 * Math.exp(-(ddx * ddx + ddy * ddy) / (160 * 160));
+					target += 300 * Math.exp(-(ddx * ddx + ddy * ddy) / (windR * windR));
 				}
 				target = Math.min(MAX, target);
 				w[i] += (target - w[i]) * 0.14;
