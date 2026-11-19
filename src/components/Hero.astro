@@ -32,6 +32,7 @@ const words = name.split(' ');
 	</h1>
 	<!-- Scroll cue: a fixation cross that drifts down; fades out as soon as you scroll -->
 	<a href="#research" class="cue" data-cue>
+		<span class="cue-label" aria-hidden="true">see more</span>
 		<span class="cue-mark" aria-hidden="true">+</span>
 		<span class="sr-only">Skip to Research Experience</span>
 	</a>
@@ -85,15 +86,20 @@ const words = name.split(' ');
 		left: 50%;
 		bottom: 1.25rem;
 		transform: translateX(-50%);
-		display: grid;
-		place-items: center;
-		width: 2.75rem; /* comfortable tap target */
-		height: 2.75rem;
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		height: 2.75rem; /* comfortable tap target */
+		padding-inline: 0.75rem;
+		white-space: nowrap;
 		color: var(--color-muted);
 		transition: color 0.2s;
 	}
 	.cue:hover {
 		color: var(--color-kite);
+	}
+	.cue-label {
+		font-size: 0.8125rem;
 	}
 	.cue-mark {
 		font-family: var(--font-mono);
