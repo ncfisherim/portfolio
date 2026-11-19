@@ -21,7 +21,8 @@ Personal portfolio site. Two goals: (1) ship a real, deeply customizable portfol
 - Content (projects, bio, links) lives in data/content files, not hardcoded in markup, so it's editable without touching components
 - Keep it hand-owned code: no page builders or heavy themes
 - Design tokens (fonts, colors, light/dark) live in `@theme` in `src/styles/global.css`
-- Privacy: never publish the phone number. PDFs are gitignored except `public/nathan-fisher-resume.pdf` (phone-free copy, linked from nav + Contact) — check any replacement PDF for a phone number before committing
+- Privacy: never publish the phone number.
+- Photos: `src/assets/photos/<entry-id>/`, referenced from `media` in site.ts, rendered with astro:assets <Image> (lazy, responsive WebP). Before committing a photo: view it, strip EXIF/GPS and resize with sharp (originals go to gitignored `_originals/`). Never publish third-party figures or face-database images — `src/assets/photos/research/` is gitignored for that reason until replaced with Nathan's own screenshots. PDFs are gitignored except `public/nathan-fisher-resume.pdf` (phone-free copy, linked from nav + Contact) — check any replacement PDF for a phone number before committing
 - Commit after each working step with a clear message
 
 ## Phases

@@ -1,4 +1,5 @@
 ---
+import { Image } from 'astro:assets';
 import type { Entry } from '../data/site';
 
 interface Props {
@@ -42,6 +43,25 @@ const { id, title, entries, class: className = '' } = Astro.props;
 								</a>
 							)}
 							<p class="font-display text-xl leading-snug sm:text-2xl">{e.summary}</p>
+
+							{e.media && (
+								<div class:list={['mt-6', e.media.length > 1 && 'media-row']}>
+									{e.media.map((m) => (
+										<figure class="media">
+											<Image
+												src={m.src}
+												alt={m.alt}
+												widths={[480, 800, 1200, 1600]}
+												sizes="(min-width: 768px) 42rem, calc(100vw - 2rem)"
+												loading="lazy"
+												decoding="async"
+												class="h-auto w-full bg-line"
+											/>
+											{m.caption && <figcaption class="mt-2 text-xs text-muted">{m.caption}</figcaption>}
+										</figure>
+									))}
+								</div>
+							)}
 
 							{e.stats && (
 								<dl class="mt-6 flex flex-wrap gap-x-8 gap-y-4">

@@ -133,3 +133,20 @@ mark[data-evidence-hit] {
 @keyframes evidence-in {
 	0%, 35% { background: color-mix(in oklab, var(--color-kite) 55%, transparent); }
 }
+
+/* Entry photos: several photos become a swipeable row */
+.media-row {
+	display: flex;
+	gap: 0.75rem;
+	overflow-x: auto;
+	scroll-snap-type: x mandatory;
+	overscroll-behavior-x: contain;
+	scrollbar-width: thin;
+}
+.media-row .media {
+	flex: 0 0 85%;
+	scroll-snap-align: start;
+}
+.media {
+	margin: 0;
+}

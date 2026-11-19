@@ -1,3 +1,7 @@
+// Photos live in src/assets/photos/<entry-id>/ and are optimized at build time.
+import kitesurfing from '../assets/photos/water/kitesurfing.jpg';
+import blenderGramophone from '../assets/photos/games/blender-gramophone.png';
+
 // All site content lives here. Edit this file to change what the site says —
 // components only handle presentation.
 
@@ -28,6 +32,7 @@ export type Entry = {
 	stats?: { value: string; label: string }[];
 	tools?: string[];
 	link?: { label: string; href: string };
+	media?: { src: ImageMetadata; alt: string; caption?: string }[];
 };
 
 // All entries, newest first. `section` decides whether they show under
@@ -58,6 +63,13 @@ export const entries: Entry[] = [
 			'Model and prepare 3D assets in Blender.',
 		],
 		tools: ['C#', 'Unity', 'Blender'],
+		media: [
+			{
+				src: blenderGramophone,
+				alt: 'Blender viewport showing a low-poly gramophone on a wooden cabinet, with the gradient texture palette open on the left.',
+				caption: 'A low-poly gramophone, modeled and textured in Blender.',
+			},
+		],
 	},
 	{
 		id: 'water',
@@ -76,6 +88,12 @@ export const entries: Entry[] = [
 			{ value: '6.5', label: 'years' },
 			{ value: '10–15', label: 'staff' },
 			{ value: '$100k+', label: 'equipment' },
+		],
+		media: [
+			{
+				src: kitesurfing,
+				alt: 'A kitesurfer mid-jump high above a choppy turquoise sea, holding the board out to one side.',
+			},
 		],
 	},
 	{
