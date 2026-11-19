@@ -21,7 +21,7 @@ Personal portfolio site. Two goals: (1) ship a real, deeply customizable portfol
 - Commit after each working step with a clear message
 
 ## Phases
-- [x] Phase 0 — Foundation: scaffold, git, GitHub repo, Vercel deploy of a placeholder
+- [ ] Phase 0 — Foundation: scaffold, git, GitHub repo, Vercel deploy of a placeholder
 - [ ] Phase 1 — Content & structure: gather bio/projects/links, define sections and pages
 - [ ] Phase 2 — Design: visual direction, typography, color, layout, dark mode
 - [ ] Phase 3 — Build: implement pages/components with real content
