@@ -16,11 +16,9 @@
   .name span { display: block; white-space: nowrap; }
   .top { position: absolute; top: 60px; left: 72px; right: 72px; display: flex; justify-content: space-between; font: 400 20px "IBM Plex Mono"; color: #5c5b57; }
   .top b { color: #ff4a1c; font-weight: 400; }
-  .icon { width: 180px; height: 180px; background: #808080; position: relative; display: grid; place-items: center; }
-  .cross { position: absolute; width: 78px; height: 78px; }
-  .cross::before, .cross::after { content: ""; position: absolute; background: #111; left: 50%; top: 50%; transform: translate(-50%, -50%); }
-  .cross::before { width: 100%; height: 12px; } .cross::after { width: 12px; height: 100%; }
-  .stim { position: absolute; width: 34px; height: 34px; right: 22px; top: 22px; background: #ff4a1c; }
+  .icon { width: 180px; height: 180px; background: #ecebe7; position: relative; display: grid; place-items: center; }
+  .icon svg { width: 112px; height: 112px; }
+  .icon b { position: absolute; top: 14px; right: 20px; font: 400 34px "IBM Plex Mono"; color: #ff4a1c; line-height: 1; }
 </style>
 </head>
 <body>
@@ -28,7 +26,8 @@
     <div class="top"><span><b>+</b> nathanfisher.space</span><span>Researcher · Programmer · Game Developer</span></div>
     <h1 class="name" id="name"></h1>
   </div>
-  <div class="icon" id="icon"><span class="cross"></span><span class="stim"></span></div>
+  <!-- Home-screen icon: the wind-blown N (same path as public/favicon.svg) + a small orange "+" -->
+  <div class="icon" id="icon"><svg viewBox="0 0 64 64"><path fill="#121211" d="M8 56V8h8l28 38V8h12v48H46L12 16v40z"/></svg><b>+</b></div>
   <script>
     if (location.hash === "#icon") document.getElementById("og").remove();
     else {

@@ -1,6 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <rect width="64" height="64" rx="12" fill="#808080"/>
-  <rect x="18" y="29.5" width="28" height="5" fill="#111"/>
-  <rect x="29.5" y="18" width="5" height="28" fill="#111"/>
-  <rect x="44" y="8" width="12" height="12" fill="#ff4a1c"/>
+  <!-- "N" mid-gust: thin left stem, diagonal thickening as it falls, heavy right stem.
+       Strokes sit on a 4-unit grid so they land on whole pixels at 16px.
+       Ink on light tabs, paper on dark tabs. -->
+  <style>
+    path { fill: #121211; }
+    @media (prefers-color-scheme: dark) { path { fill: #ecebe7; } }
+  </style>
+  <path d="M8 56V8h8l28 38V8h12v48H46L12 16v40z"/>
 </svg>
