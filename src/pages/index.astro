@@ -1,13 +1,115 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import Section from '../components/Section.astro';
+import { profile, about, projects, experience, publication, education, skills } from '../data/site';
 ---
 
-<Layout title="Portfolio — coming soon">
-	<main class="mx-auto flex min-h-screen max-w-2xl flex-col justify-center px-6">
-		<p class="text-sm font-medium uppercase tracking-widest text-neutral-500">Phase 0</p>
-		<h1 class="mt-2 text-4xl font-bold tracking-tight">Portfolio coming soon.</h1>
-		<p class="mt-4 text-lg text-neutral-600 dark:text-neutral-400">
-			Built with Astro + Tailwind, deployed on Vercel.
-		</p>
-	</main>
+<Layout title={profile.name} description={profile.tagline}>
+	<div class="mx-auto max-w-4xl px-6 sm:px-10">
+		<header class="flex items-center justify-between py-8 font-mono text-xs uppercase tracking-[0.2em] text-muted">
+			<span>{profile.name.split(' ').map((w) => w[0]).join('')}</span>
+			<nav class="flex gap-4 sm:gap-6">
+				<a class="link" href="#work">Work</a>
+				<a class="link" href="#experience">Experience</a>
+				<a class="link" href="#contact">Contact</a>
+			</nav>
+		</header>
+
+		<main>
+			<!-- Hero -->
+			<section class="flex min-h-[min(80vh,760px)] flex-col justify-center pb-16">
+				<p class="rise font-mono text-xs uppercase tracking-[0.2em] text-accent">{profile.role}</p>
+				<h1 class="rise mt-6 font-serif text-7xl leading-[0.9] tracking-tight sm:text-9xl" style="animation-delay: 80ms">
+					{profile.name.split(' ')[0]}<br />
+					<em class="text-muted">{profile.name.split(' ').slice(1).join(' ')}</em>
+				</h1>
+				<p class="rise mt-10 max-w-xl text-lg leading-relaxed text-muted" style="animation-delay: 160ms">
+					{profile.tagline}
+				</p>
+			</section>
+
+			<Section index="01" label="About">
+				<div class="space-y-5 text-lg leading-relaxed">
+					{about.map((p) => <p>{p}</p>)}
+				</div>
+			</Section>
+
+			<Section index="02" label="Work" id="work">
+				<ul class="space-y-12">
+					{projects.map((p) => (
+						<li class="group">
+							<div class="flex items-baseline justify-between gap-4">
+								<h3 class="font-serif text-3xl leading-tight">
+									{p.href ? (
+										<a class="link" href={p.href} target="_blank" rel="noopener">
+											{p.title} <span class="inline-block transition-transform group-hover:translate-x-1 group-hover:-translate-y-1">↗</span>
+										</a>
+									) : (
+										p.title
+									)}
+								</h3>
+								<span class="shrink-0 font-mono text-xs text-muted">{p.year}</span>
+							</div>
+							<p class="mt-3 max-w-2xl leading-relaxed text-muted">{p.summary}</p>
+							<ul class="mt-4 flex flex-wrap gap-2">
+								{p.tags.map((t) => (
+									<li class="rounded-full border border-line px-3 py-1 font-mono text-[11px] text-muted">{t}</li>
+								))}
+							</ul>
+						</li>
+					))}
+				</ul>
+			</Section>
+
+			<Section index="03" label="Experience" id="experience">
+				<ol class="divide-y divide-line">
+					{experience.map((j) => (
+						<li class="grid gap-1 py-5 first:pt-0 sm:grid-cols-[1fr_auto] sm:gap-6">
+							<div>
+								<h3 class="font-medium">
+									{j.role} <span class="text-muted">· {j.org}</span>
+								</h3>
+								<p class="mt-1 text-sm leading-relaxed text-muted">{j.note}</p>
+							</div>
+							<span class="order-first font-mono text-xs text-muted sm:order-none sm:pt-1">{j.dates}</span>
+						</li>
+					))}
+				</ol>
+			</Section>
+
+			<Section index="04" label="Writing">
+				<a class="group block" href={publication.href} target="_blank" rel="noopener">
+					<p class="font-serif text-2xl leading-snug transition-colors group-hover:text-accent">
+						“An Exploration of Relationships Between Perceptual and Cognitive Racial Biases”
+					</p>
+					<p class="mt-3 font-mono text-xs text-muted">{publication.venue} · 2022 ↗</p>
+				</a>
+			</Section>
+
+			<Section index="05" label="Toolkit">
+				<ul class="flex flex-wrap gap-x-6 gap-y-3 text-lg">
+					{skills.map((s) => <li>{s}</li>)}
+				</ul>
+				<p class="mt-8 font-mono text-xs text-muted">
+					{education.degree} — {education.school}, {education.dates}
+				</p>
+			</Section>
+
+			<Section index="06" label="Contact" id="contact">
+				<p class="font-serif text-4xl leading-tight sm:text-5xl">
+					Let’s talk —<br />
+					<a class="link italic text-accent" href={`mailto:${profile.email}`}>{profile.email}</a>
+				</p>
+				<ul class="mt-8 flex gap-6 font-mono text-xs uppercase tracking-[0.2em] text-muted">
+					{profile.links.map((l) => (
+						<li><a class="link" href={l.href} target="_blank" rel="noopener">{l.label}</a></li>
+					))}
+				</ul>
+			</Section>
+		</main>
+
+		<footer class="border-t border-line py-10 font-mono text-xs text-muted">
+			© {new Date().getFullYear()} {profile.name} · Built with Astro &amp; Claude Code
+		</footer>
+	</div>
 </Layout>

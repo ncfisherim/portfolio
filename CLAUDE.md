@@ -18,12 +18,14 @@ Personal portfolio site. Two goals: (1) ship a real, deeply customizable portfol
 - Every page uses `src/layouts/Layout.astro`
 - Content (projects, bio, links) lives in data/content files, not hardcoded in markup, so it's editable without touching components
 - Keep it hand-owned code: no page builders or heavy themes
+- Design tokens (fonts, colors, light/dark) live in `@theme` in `src/styles/global.css`
+- Privacy: never publish the phone number; resume PDFs are gitignored
 - Commit after each working step with a clear message
 
 ## Phases
 - [x] Phase 0 — Foundation: scaffold, git, GitHub repo, Vercel deploy of a placeholder
-- [ ] Phase 1 — Content & structure: gather bio/projects/links, define sections and pages
+- [x] Phase 1 — Content & structure: content pulled from resume into `src/data/site.ts`
 - [ ] Phase 2 — Design: visual direction, typography, color, layout, dark mode
-- [ ] Phase 3 — Build: implement pages/components with real content
+- [x] Phase 3 — Build: single-page minimalist v1 (hero, about, work, experience, writing, toolkit, contact)
 - [ ] Phase 4 — Polish: responsive, accessibility, SEO/meta/OG images, performance
 - [ ] Phase 5 — Launch: custom domain, analytics, final review

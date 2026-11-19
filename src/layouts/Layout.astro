@@ -6,7 +6,7 @@ interface Props {
 	description?: string;
 }
 
-const { title = 'Portfolio', description = 'Personal portfolio' } = Astro.props;
+const { title = 'Nathan Fisher', description = 'Portfolio of Nathan Fisher' } = Astro.props;
 ---
 
 <!doctype html>
@@ -15,10 +15,18 @@ const { title = 'Portfolio', description = 'Personal portfolio' } = Astro.props;
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<meta name="description" content={description} />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			rel="stylesheet"
+			href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500&family=JetBrains+Mono:wght@400&display=swap"
+		/>
 		<title>{title}</title>
 	</head>
-	<body class="min-h-screen bg-white text-neutral-900 antialiased dark:bg-neutral-950 dark:text-neutral-100">
+	<body class="min-h-screen bg-paper font-sans text-ink antialiased">
 		<slot />
 	</body>
 </html>
