@@ -30,10 +30,9 @@ const words = name.split(' ');
 			}
 		</span>
 	</h1>
-	<!-- Scroll cue: a fixation cross that drifts down; fades out as soon as you scroll -->
+	<!-- Scroll cue: "see more" bobbing gently up and down; fades out as soon as you scroll -->
 	<a href="#research" class="cue" data-cue>
 		<span class="cue-label" aria-hidden="true">see more</span>
-		<span class="cue-mark" aria-hidden="true">+</span>
 		<span class="sr-only">Skip to Research Experience</span>
 	</a>
 </section>
@@ -88,7 +87,6 @@ const words = name.split(' ');
 		transform: translateX(-50%);
 		display: flex;
 		align-items: center;
-		gap: 0.5rem;
 		height: 2.75rem; /* comfortable tap target */
 		padding-inline: 0.75rem;
 		white-space: nowrap;
@@ -100,24 +98,17 @@ const words = name.split(' ');
 	}
 	.cue-label {
 		font-size: 0.8125rem;
+		animation: cue-bob 2.4s ease-in-out infinite;
 	}
-	.cue-mark {
-		font-family: var(--font-mono);
-		font-size: 1.25rem;
-		line-height: 1;
-		animation: cue-drift 2.6s cubic-bezier(0.45, 0, 0.55, 1) infinite;
-	}
-	@keyframes cue-drift {
-		0% { transform: translateY(-6px); opacity: 0; }
-		30% { opacity: 1; }
-		70% { opacity: 1; }
-		100% { transform: translateY(10px); opacity: 0; }
+	@keyframes cue-bob {
+		0%, 100% { transform: translateY(-3px); }
+		50% { transform: translateY(4px); }
 	}
 	@media (prefers-reduced-motion: reduce) {
 		.wind {
 			display: none;
 		}
-		.cue-mark {
+		.cue-label {
 			animation: none;
 		}
 	}
