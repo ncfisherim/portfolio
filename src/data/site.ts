@@ -55,7 +55,7 @@ export const entries: Entry[] = [
 		id: 'games',
 		section: 'work',
 		years: '2020—',
-		title: 'Independent games',
+		title: 'Video Game Development',
 		kind: 'Games',
 		summary: 'Personal projects taken from first concept to a finished, playable build.',
 		points: [
