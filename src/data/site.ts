@@ -7,9 +7,11 @@ export const profile = {
 	description:
 		'Nathan Fisher — researcher and self-taught programmer. Online behavioral experiments, Unity games, and six years teaching on a kitesurfing beach.',
 	email: 'ncfisherim@outlook.com',
+	// Public résumé (phone number removed). Replace the file in public/ to update it.
+	resume: '/nathan-fisher-resume.pdf',
 	links: [
 		{ label: 'GitHub', href: 'https://github.com/ncfisherim' },
-		// { label: 'LinkedIn', href: 'https://www.linkedin.com/in/...' },
+		{ label: 'LinkedIn', href: 'https://www.linkedin.com/in/nathan-c-fisher/' },
 	],
 };
 

@@ -16,13 +16,6 @@ const { id, title, entries, class: className = '' } = Astro.props;
 		<span class="font-mono text-xs text-muted">{entries.length} {entries.length === 1 ? 'entry' : 'entries'} · newest first</span>
 	</div>
 
-	<!-- Column headings (desktop) -->
-	<div
-		class="hidden grid-cols-[6.5rem_1fr_9rem_1.5rem] gap-6 border-b border-line py-2 font-mono text-[11px] text-muted sm:grid"
-		aria-hidden="true"
-	>
-		<span>Years</span><span>Title</span><span>Kind</span><span></span>
-	</div>
 
 	<div>
 		{

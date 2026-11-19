@@ -25,3 +25,4 @@ pnpm-debug.log*
 
 # private source docs (contain phone number)
 *.pdf
+!public/nathan-fisher-resume.pdf

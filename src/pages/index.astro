@@ -15,6 +15,7 @@ import { profile, entries, skills } from '../data/site';
 				<a class="ul" href="#research">Research</a>
 				<a class="ul" href="#work">Work</a>
 				<a class="ul" href="#contact">Contact</a>
+				<a class="ul hidden sm:inline" href={profile.resume} target="_blank" rel="noopener">Résumé<span class="sr-only"> (PDF, opens in new tab)</span></a>
 			</nav>
 		</div>
 	</header>
@@ -44,7 +45,7 @@ import { profile, entries, skills } from '../data/site';
 						<span data-copy-label>Copy</span>
 					</button>
 				</div>
-				<ul class="mt-10 flex gap-6 text-sm">
+				<ul class="mt-10 flex flex-wrap gap-x-6 gap-y-3 text-sm">
 					{
 						profile.links.map((l) => (
 							<li>
@@ -55,6 +56,12 @@ import { profile, entries, skills } from '../data/site';
 							</li>
 						))
 					}
+					<li>
+						<a class="ul" href={profile.resume} target="_blank" rel="noopener">
+							Résumé <span class="font-mono text-xs text-muted">PDF</span>
+							<span class="sr-only"> (opens in new tab)</span>
+						</a>
+					</li>
 				</ul>
 			</section>
 		</main>
@@ -62,7 +69,7 @@ import { profile, entries, skills } from '../data/site';
 		<footer class="flex flex-wrap justify-between gap-4 border-t border-line py-6 text-xs text-muted">
 			<span>© {new Date().getFullYear()} {profile.name}</span>
 			<span class="font-mono">
-				n = 1 · built with Astro &amp; Claude Code ·
+				Built with Astro &amp; Claude Code ·
 				<a class="ul" href="https://github.com/ncfisherim/portfolio" target="_blank" rel="noopener">source</a>
 			</span>
 		</footer>
