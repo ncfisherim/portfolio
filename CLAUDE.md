@@ -14,6 +14,7 @@ Personal portfolio site. Two goals: (1) ship a real, deeply customizable portfol
 ## Commands
 - `npm run dev` — local dev server (http://localhost:4321)
 - `npm run build` — production build to `dist/`; run before every commit
+- `npm run og` — regenerate `public/og.png` + `public/apple-touch-icon.png` from `scripts/og-image.html` (headless Edge)
 
 ## Conventions
 - Every page uses `src/layouts/Layout.astro`
@@ -26,7 +27,7 @@ Personal portfolio site. Two goals: (1) ship a real, deeply customizable portfol
 ## Phases
 - [x] Phase 0 — Foundation: scaffold, git, GitHub repo, Vercel deploy of a placeholder
 - [x] Phase 1 — Content & structure: content pulled from resume into `src/data/site.ts`
-- [ ] Phase 2 — Design: visual direction, typography, color, layout, dark mode
+- [x] Phase 2 — Design: serif/mono minimalist, teal accent, auto light/dark
 - [x] Phase 3 — Build: single-page minimalist v1 (hero, about, work, experience, writing, toolkit, contact)
-- [ ] Phase 4 — Polish: responsive, accessibility, SEO/meta/OG images, performance
-- [ ] Phase 5 — Launch: custom domain, analytics, final review
+- [x] Phase 4 — Polish: sitemap, robots, canonical, OG image, JSON-LD, a11y, self-hosted fonts — Lighthouse 100/100/100/100
+- [~] Phase 5 — Launch: domain live; analytics + final review pending

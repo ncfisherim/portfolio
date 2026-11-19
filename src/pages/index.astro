@@ -7,15 +7,15 @@ import { profile, about, projects, experience, publication, education, skills } 
 <Layout title={profile.name} description={profile.tagline}>
 	<div class="mx-auto max-w-4xl px-6 sm:px-10">
 		<header class="flex items-center justify-between py-8 font-mono text-xs uppercase tracking-[0.2em] text-muted">
-			<span>{profile.name.split(' ').map((w) => w[0]).join('')}</span>
-			<nav class="flex gap-4 sm:gap-6">
+			<a href="/" class="link">{profile.name.split(' ').map((w) => w[0]).join('')}<span class="sr-only"> — home</span></a>
+			<nav aria-label="Primary" class="flex gap-4 sm:gap-6">
 				<a class="link" href="#work">Work</a>
 				<a class="link" href="#experience">Experience</a>
 				<a class="link" href="#contact">Contact</a>
 			</nav>
 		</header>
 
-		<main>
+		<main id="main">
 			<!-- Hero -->
 			<section class="flex min-h-[min(80vh,760px)] flex-col justify-center pb-16">
 				<p class="rise font-mono text-xs uppercase tracking-[0.2em] text-accent">{profile.role}</p>
@@ -42,7 +42,7 @@ import { profile, about, projects, experience, publication, education, skills } 
 								<h3 class="font-serif text-3xl leading-tight">
 									{p.href ? (
 										<a class="link" href={p.href} target="_blank" rel="noopener">
-											{p.title} <span class="inline-block transition-transform group-hover:translate-x-1 group-hover:-translate-y-1">↗</span>
+											{p.title} <span aria-hidden="true" class="inline-block transition-transform group-hover:translate-x-1 group-hover:-translate-y-1">↗</span>
 										</a>
 									) : (
 										p.title
@@ -82,7 +82,7 @@ import { profile, about, projects, experience, publication, education, skills } 
 					<p class="font-serif text-2xl leading-snug transition-colors group-hover:text-accent">
 						“An Exploration of Relationships Between Perceptual and Cognitive Racial Biases”
 					</p>
-					<p class="mt-3 font-mono text-xs text-muted">{publication.venue} · 2022 ↗</p>
+					<p class="mt-3 font-mono text-xs text-muted">{publication.venue} · 2022 <span aria-hidden="true">↗</span><span class="sr-only">(opens in new tab)</span></p>
 				</a>
 			</Section>
 
