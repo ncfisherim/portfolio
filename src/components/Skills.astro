@@ -30,6 +30,7 @@ const { groups } = Astro.props;
 											class="skill linked"
 											data-skill
 											data-proof={s.proof.join(' ')}
+											data-evidence={JSON.stringify(s.evidence ?? [s.name])}
 											aria-describedby="skills-hint"
 										>
 											{s.name}
@@ -145,18 +146,77 @@ const { groups } = Astro.props;
 				a.textContent = titleOf(id);
 				a.addEventListener('click', (ev) => {
 					ev.preventDefault();
-					jump([id]);
+					jump([id], evidenceOf(b));
 				});
 				if (i) used.append(i === ids.length - 1 ? ' and ' : ', ');
 				used.append(a);
 			});
 		};
 
+		// ── Evidence marks: highlight the exact phrases that prove the skill ──────
+		const evidenceOf = (b: HTMLElement): string[] => {
+			try {
+				return JSON.parse(b.dataset.evidence ?? '[]');
+			} catch {
+				return [];
+			}
+		};
+		const clearMarks = (root: ParentNode = document) => {
+			root.querySelectorAll('mark[data-evidence-hit]').forEach((m) => {
+				const parent = m.parentNode!;
+				parent.replaceChild(document.createTextNode(m.textContent ?? ''), m);
+				parent.normalize(); // merge the text back into one node
+			});
+		};
+		const escapeRe = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+		const markIn = (d: HTMLDetailsElement, phrases: string[]) => {
+			if (!phrases.length) return;
+			// longest first so a long phrase wins over a word inside it
+			const re = new RegExp(
+				[...phrases].sort((a, b) => b.length - a.length).map(escapeRe).join('|'),
+				'gi',
+			);
+			const walker = document.createTreeWalker(d, NodeFilter.SHOW_TEXT, {
+				// only the opened content, not the row title in <summary>
+				acceptNode: (n) =>
+					n.parentElement?.closest('summary, mark') ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT,
+			});
+			const nodes: Text[] = [];
+			while (walker.nextNode()) nodes.push(walker.currentNode as Text);
+			for (const node of nodes) {
+				const text = node.data;
+				re.lastIndex = 0;
+				if (!re.test(text)) continue;
+				re.lastIndex = 0;
+				const frag = document.createDocumentFragment();
+				let last = 0;
+				for (const m of text.matchAll(re)) {
+					const i = m.index ?? 0;
+					if (i > last) frag.append(text.slice(last, i));
+					const mark = document.createElement('mark');
+					mark.setAttribute('data-evidence-hit', '');
+					mark.textContent = m[0];
+					frag.append(mark);
+					last = i + m[0].length;
+				}
+				if (last < text.length) frag.append(text.slice(last));
+				node.replaceWith(frag);
+			}
+		};
+		// Closing an entry clears its marks
+		document.querySelectorAll<HTMLDetailsElement>('details.entry').forEach((d) =>
+			d.addEventListener('toggle', () => !d.open && clearMarks(d)),
+		);
+
 		// ── Jump: open the proof entries, scroll to the first, flash them ────────
-		const jump = (ids: string[]) => {
+		const jump = (ids: string[], phrases: string[] = []) => {
 			const els = ids.map(entry).filter(Boolean) as HTMLDetailsElement[];
 			if (!els.length) return;
-			els.forEach((d) => (d.open = true));
+			clearMarks();
+			els.forEach((d) => {
+				d.open = true;
+				markIn(d, phrases);
+			});
 			els[0].scrollIntoView({ behavior: reduce.matches ? 'auto' : 'smooth', block: 'start' });
 			els.forEach((d) => {
 				d.removeAttribute('data-flash');
@@ -171,7 +231,7 @@ const { groups } = Astro.props;
 		linked.forEach((b) => {
 			b.addEventListener('pointerenter', () => canHover.matches && preview(b));
 			b.addEventListener('focus', () => preview(b));
-			b.addEventListener('click', () => jump(proofOf(b)));
+			b.addEventListener('click', () => jump(proofOf(b), evidenceOf(b)));
 		});
 		section.addEventListener('pointerleave', () => canHover.matches && clearPreview());
 		section.addEventListener('focusout', (e) => {

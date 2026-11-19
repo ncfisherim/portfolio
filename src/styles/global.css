@@ -118,3 +118,18 @@ body {
 	0%, 30% { background: color-mix(in oklab, var(--color-kite) 18%, transparent); }
 	100% { background: transparent; }
 }
+
+/* Evidence for a skill, highlighted inside the entry after a jump from Skills */
+mark[data-evidence-hit] {
+	color: inherit;
+	background: color-mix(in oklab, var(--color-kite) 24%, transparent);
+	border-radius: 2px;
+	padding: 0.05em 0.15em;
+	margin: 0 -0.15em;
+	-webkit-box-decoration-break: clone;
+	box-decoration-break: clone;
+	animation: evidence-in 1.4s ease-out both;
+}
+@keyframes evidence-in {
+	0%, 35% { background: color-mix(in oklab, var(--color-kite) 55%, transparent); }
+}

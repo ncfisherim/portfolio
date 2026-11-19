@@ -119,10 +119,13 @@ export const entries: Entry[] = [
 	},
 ];
 
-// Skills, grouped. `proof` lists the entry ids (above) where the skill was used —
-// hovering a skill highlights those entries; clicking/tapping jumps to them and opens them.
+// Skills, grouped.
+// - `proof`: entry ids (above) where the skill was used. Hovering a skill highlights those
+//   entries; clicking/tapping jumps to them and opens them.
+// - `evidence`: exact phrases inside those entries to highlight after the jump. Defaults to the
+//   skill name itself. Keep them word-for-word with the entry text, or nothing gets highlighted.
 // Skills without proof are shown as plain text.
-export type Skill = { name: string; proof?: string[] };
+export type Skill = { name: string; proof?: string[]; evidence?: string[] };
 export const skills: { group: string; items: Skill[] }[] = [
 	{
 		group: 'Programming',
@@ -135,9 +138,21 @@ export const skills: { group: string; items: Skill[] }[] = [
 	{
 		group: 'Research',
 		items: [
-			{ name: 'Experiment design', proof: ['research'] },
-			{ name: 'Human-subjects research', proof: ['research'] },
-			{ name: 'Data cleaning', proof: ['research'] },
+			{
+				name: 'Experiment design',
+				proof: ['research'],
+				evidence: ['Designed, programmed, and launched an online experiment', 'Piloted and debugged trial logic, randomization, timing'],
+			},
+			{
+				name: 'Human-subjects research',
+				proof: ['research'],
+				evidence: ['IRB-approved protocol and informed consent flow', 'organized data from 28 participants'],
+			},
+			{
+				name: 'Data cleaning',
+				proof: ['research'],
+				evidence: ['Applied completion criteria to 37 sessions', 'organized data from 28 participants'],
+			},
 			{ name: 'ICH-GCP' },
 		],
 	},
@@ -152,9 +167,21 @@ export const skills: { group: string; items: Skill[] }[] = [
 	{
 		group: 'People',
 		items: [
-			{ name: 'Team leadership', proof: ['service', 'water'] },
-			{ name: 'Training & coaching', proof: ['water', 'service'] },
-			{ name: 'Safety briefings', proof: ['water', 'service'] },
+			{
+				name: 'Team leadership',
+				proof: ['service', 'water'],
+				evidence: ['led a team of 5 food runners', 'trained and supported 10–15 seasonal staff'],
+			},
+			{
+				name: 'Training & coaching',
+				proof: ['water', 'service'],
+				evidence: ['Taught beginner and intermediate kitesurfers', 'giving targeted corrective feedback', 'trained and supported 10–15 seasonal staff', 'As head coach'],
+			},
+			{
+				name: 'Safety briefings',
+				proof: ['water', 'service'],
+				evidence: ['safety briefings', 'prevent allergic reactions'],
+			},
 		],
 	},
 	{
