@@ -78,7 +78,7 @@ export const entries: Entry[] = [
 		title: 'Real Watersports',
 		org: 'Kitesurfing instructor, assistant manager',
 		kind: 'Teaching',
-		summary: 'Six and a half years at a watersports school — first running the shop, then teaching on the water.',
+		summary: 'Six and a half years at a watersports school. First running the shop, then teaching on the water.',
 		points: [
 			'Taught beginner and intermediate kitesurfers: safety briefings, spotting technique errors, and giving targeted corrective feedback.',
 			'As assistant manager, trained and supported 10–15 seasonal staff in customer service, sales, rentals, and safety.',
