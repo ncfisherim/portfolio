@@ -47,8 +47,8 @@ export const entries: Entry[] = [
 		kind: 'Leadership',
 		summary: 'High-volume fine dining, where details like allergens are a safety system.',
 		points: [
-			'As head coach, led a team of 5 food runners — delegating and re-prioritizing in real time during peak service.',
 			'Communicate menu, ingredient, and allergen information precisely; coordinate with the kitchen to prevent allergic reactions.',
+			'As head coach, led a team of 5 food runners — delegating and re-prioritizing in real time during peak service.',
 		],
 	},
 	{
