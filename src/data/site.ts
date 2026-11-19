@@ -130,7 +130,7 @@ export const entries: Entry[] = [
 		title: 'BS Psychology, minor in Philosophy',
 		org: 'University of Florida',
 		kind: 'Education',
-		summary: 'Human-subjects research methods, perception and cognition, and a philosophy minor on the side.',
+		summary: 'Research methods, neuroanatomy, abnormal psychology, and a philosophy minor.',
 		points: [
 			'Fisher, N., Maskas, V., Sans, A., Kvam, P., & Odegaard, B. (2022). An Exploration of Relationships Between Perceptual and Cognitive Racial Biases. UF Journal of Undergraduate Research, 24.',
 		],
