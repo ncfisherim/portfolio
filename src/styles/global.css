@@ -1,66 +1,104 @@
 @import "tailwindcss";
 
-/* Design tokens — change the whole look from here. */
+/* ───────────────────────────────────────────────
+   Design tokens — the whole look lives here.
+   Palette: lab-grey paper + one "kite orange" stimulus color.
+   ─────────────────────────────────────────────── */
 @theme {
-	--font-sans: "Inter Variable", "Inter", ui-sans-serif, system-ui, sans-serif;
-	--font-serif: "Instrument Serif", ui-serif, Georgia, serif;
-	--font-mono: "JetBrains Mono", ui-monospace, monospace;
+	--font-sans: "Funnel Sans Variable", ui-sans-serif, system-ui, sans-serif;
+	--font-display: "Funnel Display Variable", "Funnel Sans Variable", ui-sans-serif, system-ui, sans-serif;
+	--font-mono: "IBM Plex Mono", ui-monospace, monospace;
 
-	--color-paper: #f7f6f2;
-	--color-ink: #141414;
-	--color-muted: #6b6b66;
-	--color-line: #e2e0d8;
-	--color-accent: #0e7c86;
+	--color-paper: #ecebe7;
+	--color-ink: #121211;
+	--color-muted: #5c5b57;
+	--color-line: #d2d0c9;
+	--color-kite: #ff4a1c;      /* graphics only: stimulus, cross, focus */
+	--color-kite-ink: #b3310a;  /* accessible orange for text */
+	--color-stage: #808080;     /* standard experiment mid-grey */
 }
 
 @media (prefers-color-scheme: dark) {
 	:root {
-		--color-paper: #0f0f0e;
-		--color-ink: #ecebe6;
-		--color-muted: #8f8e88;
-		--color-line: #262624;
-		--color-accent: #4fc4cc;
+		--color-paper: #121211;
+		--color-ink: #ecebe7;
+		--color-muted: #9d9c96;
+		--color-line: #2b2b29;
+		--color-kite: #ff5a2e;
+		--color-kite-ink: #ff8159;
+		/* stage stays #808080 in both modes: black text on it keeps 4.7:1 contrast */
 	}
 }
 
 html {
 	scroll-behavior: smooth;
+	-webkit-text-size-adjust: 100%;
+}
+
+body {
+	font-feature-settings: "ss01", "cv11";
 }
 
 ::selection {
-	background: var(--color-accent);
-	color: var(--color-paper);
+	background: var(--color-kite);
+	color: #fff;
 }
 
-/* Animated underline for links */
-.link {
-	background-image: linear-gradient(currentColor, currentColor);
-	background-size: 0% 1px;
-	background-position: 0 100%;
-	background-repeat: no-repeat;
-	transition: background-size 0.3s ease, color 0.2s ease;
-}
-.link:hover {
-	background-size: 100% 1px;
-	color: var(--color-accent);
-}
-
-/* Gentle fade-in on load */
-@keyframes rise {
-	from { opacity: 0; transform: translateY(8px); }
-	to { opacity: 1; transform: none; }
-}
-.rise {
-	animation: rise 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both;
-}
-@media (prefers-reduced-motion: reduce) {
-	.rise { animation: none; }
-	html { scroll-behavior: auto; }
-}
-
-/* Visible keyboard focus everywhere */
 :focus-visible {
-	outline: 2px solid var(--color-accent);
+	outline: 2px solid var(--color-kite);
 	outline-offset: 3px;
 	border-radius: 2px;
+}
+
+/* Text links: real underlines, offset and thin, that thicken + turn orange on hover */
+.ul {
+	text-decoration-line: underline;
+	text-decoration-thickness: 1px;
+	text-underline-offset: 0.18em;
+	text-decoration-color: color-mix(in oklab, currentColor 35%, transparent);
+	transition: text-decoration-color 0.2s, text-decoration-thickness 0.2s, color 0.2s;
+}
+.ul:hover {
+	color: var(--color-kite-ink);
+	text-decoration-color: currentColor;
+	text-decoration-thickness: 2px;
+}
+
+/* Index: animated <details> open/close where supported, instant elsewhere */
+.entry {
+	interpolate-size: allow-keywords;
+}
+.entry::details-content {
+	block-size: 0;
+	overflow: clip;
+	transition: block-size 0.35s cubic-bezier(0.2, 0.7, 0.2, 1), content-visibility 0.35s allow-discrete;
+}
+.entry[open]::details-content {
+	block-size: auto;
+}
+.entry summary {
+	list-style: none;
+	cursor: pointer;
+}
+.entry summary::-webkit-details-marker {
+	display: none;
+}
+/* The fixation cross doubles as the expand control: + → × */
+.entry .cross {
+	transition: transform 0.35s cubic-bezier(0.2, 0.7, 0.2, 1), color 0.2s;
+}
+.entry[open] .cross {
+	transform: rotate(45deg);
+	color: var(--color-kite);
+}
+.entry summary:hover .cross {
+	color: var(--color-kite);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	html { scroll-behavior: auto; }
+	*, *::before, *::after, .entry::details-content {
+		transition-duration: 0s !important;
+		animation-duration: 0s !important;
+	}
 }

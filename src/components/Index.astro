@@ -1,0 +1,96 @@
+---
+import type { Entry } from '../data/site';
+
+interface Props {
+	entries: Entry[];
+}
+const { entries } = Astro.props;
+---
+
+<section id="index" aria-labelledby="index-h" class="scroll-mt-6">
+	<div class="flex items-baseline justify-between border-b border-ink pb-3">
+		<h2 id="index-h" class="text-sm font-medium">Index</h2>
+		<span class="font-mono text-xs text-muted">{entries.length} entries · newest first</span>
+	</div>
+
+	<!-- Column headings (desktop) -->
+	<div
+		class="hidden grid-cols-[6.5rem_1fr_9rem_1.5rem] gap-6 border-b border-line py-2 font-mono text-[11px] text-muted sm:grid"
+		aria-hidden="true"
+	>
+		<span>Years</span><span>Title</span><span>Kind</span><span></span>
+	</div>
+
+	<div>
+		{
+			entries.map((e) => (
+				<details class="entry group scroll-mt-6 border-b border-line" id={`entry-${e.id}`}>
+					<summary class="grid grid-cols-[4.25rem_1fr_1.5rem] items-baseline gap-x-4 py-4 transition-colors hover:bg-ink/[0.03] sm:grid-cols-[6.5rem_1fr_9rem_1.5rem] sm:gap-x-6 sm:py-5">
+						<span class="font-mono text-xs tabular-nums text-muted">{e.years}</span>
+						<span>
+							<span class="block text-[1.0625rem] leading-snug font-medium sm:text-lg">{e.title}</span>
+							{e.org && <span class="block text-sm text-muted">{e.org}</span>}
+							<span class="mt-0.5 block text-xs text-muted sm:hidden">{e.kind}</span>
+						</span>
+						<span class="hidden text-sm text-muted sm:block">{e.kind}</span>
+						<span class="cross justify-self-end font-mono text-xl leading-none" aria-hidden="true">+</span>
+					</summary>
+
+					<div class="grid gap-x-6 pb-8 sm:grid-cols-[6.5rem_1fr_9rem_1.5rem]">
+						<div class="sm:col-start-2 sm:col-end-4 max-w-2xl">
+							<p class="font-display text-xl leading-snug sm:text-2xl">{e.summary}</p>
+
+							{e.stats && (
+								<dl class="mt-6 flex flex-wrap gap-x-8 gap-y-4">
+									{e.stats.map((s) => (
+										<div class="flex flex-col-reverse">
+											<dt class="text-xs text-muted">{s.label}</dt>
+											<dd class="font-mono text-2xl tabular-nums">{s.value}</dd>
+										</div>
+									))}
+								</dl>
+							)}
+
+							{e.points && (
+								<ul class="mt-6 space-y-2.5 text-[0.9375rem] leading-relaxed">
+									{e.points.map((p) => (
+										<li class="grid grid-cols-[1rem_1fr]">
+											<span class="text-kite" aria-hidden="true">–</span>
+											<span>{p}</span>
+										</li>
+									))}
+								</ul>
+							)}
+
+							{(e.tools || e.link) && (
+								<div class="mt-6 flex flex-wrap items-baseline justify-between gap-4 text-sm">
+									{e.tools && <span class="font-mono text-xs text-muted">{e.tools.join(' / ')}</span>}
+									{e.link && (
+										<a class="ul font-medium" href={e.link.href} target="_blank" rel="noopener">
+											{e.link.label}
+											<span aria-hidden="true"> ↗</span>
+											<span class="sr-only"> (opens in new tab)</span>
+										</a>
+									)}
+								</div>
+							)}
+						</div>
+					</div>
+				</details>
+			))
+		}
+	</div>
+</section>
+
+<script>
+	// Links like <a data-open="research"> open that entry before the browser jumps to it.
+	const open = (id: string | null | undefined) => {
+		if (!id) return;
+		const d = document.getElementById(`entry-${id}`) as HTMLDetailsElement | null;
+		if (d) d.open = true;
+	};
+	document.querySelectorAll<HTMLAnchorElement>('a[data-open]').forEach((a) =>
+		a.addEventListener('click', () => open(a.dataset.open)),
+	);
+	if (location.hash.startsWith('#entry-')) open(location.hash.slice(7));
+</script>

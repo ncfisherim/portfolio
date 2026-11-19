@@ -1,9 +1,8 @@
 ---
 // Self-hosted fonts (no third-party requests, no render-blocking font CSS)
-import '@fontsource/instrument-serif/latin-400.css';
-import '@fontsource/instrument-serif/latin-400-italic.css';
-import '@fontsource-variable/inter/wght.css';
-import '@fontsource/jetbrains-mono/latin-400.css';
+import '@fontsource-variable/funnel-sans/wght.css';
+import '@fontsource-variable/funnel-display/wght.css';
+import '@fontsource/ibm-plex-mono/latin-400.css';
 import '../styles/global.css';
 import { profile } from '../data/site';
 
@@ -13,7 +12,7 @@ interface Props {
 	noindex?: boolean;
 }
 
-const { title = profile.name, description = profile.tagline, noindex = false } = Astro.props;
+const { title = profile.name, description = profile.description, noindex = false } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const ogImage = new URL('/og.png', Astro.site);
 
@@ -38,8 +37,8 @@ const jsonLd = {
 		<link rel="canonical" href={canonical} />
 		{noindex && <meta name="robots" content="noindex" />}
 
-		<meta name="theme-color" content="#f7f6f2" media="(prefers-color-scheme: light)" />
-		<meta name="theme-color" content="#0f0f0e" media="(prefers-color-scheme: dark)" />
+		<meta name="theme-color" content="#ecebe7" media="(prefers-color-scheme: light)" />
+		<meta name="theme-color" content="#121211" media="(prefers-color-scheme: dark)" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 		<link rel="sitemap" href="/sitemap-index.xml" />
@@ -61,7 +60,7 @@ const jsonLd = {
 	<body class="min-h-screen bg-paper font-sans text-ink antialiased">
 		<a
 			href="#main"
-			class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded focus:bg-ink focus:px-4 focus:py-2 focus:text-paper"
+			class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:bg-ink focus:px-4 focus:py-2 focus:text-paper"
 		>
 			Skip to content
 		</a>

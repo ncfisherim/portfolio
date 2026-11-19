@@ -4,102 +4,126 @@
 export const profile = {
 	name: 'Nathan Fisher',
 	role: 'Researcher · Programmer · Game Developer',
-	tagline:
-		'I teach myself unfamiliar tools and use them to build things that work — online experiments, games, and teams that run smoothly under pressure.',
+	description:
+		'Nathan Fisher — researcher and self-taught programmer. Online behavioral experiments, Unity games, and six years teaching on a kitesurfing beach.',
 	email: 'ncfisherim@outlook.com',
 	links: [
 		{ label: 'GitHub', href: 'https://github.com/ncfisherim' },
 		// { label: 'LinkedIn', href: 'https://www.linkedin.com/in/...' },
 	],
+	// One factual line under the intro. Edit freely.
+	currently: 'Currently at Ruth’s Chris Steakhouse. BS Psychology, University of Florida.',
 };
 
-export const about = [
-	'Research professional with 2+ years designing and programming protocol-driven online human-subjects studies, testing them for reliability before launch, and organizing the resulting data for analysis.',
-	'I have a habit of learning software on my own — JavaScript and jsPsych for research, C#, Unity and Blender for games — paired with the organizational and leadership experience of running teams of up to 15 people.',
+// The intro paragraph. Segments with `to` become links that open that Index entry.
+export const lede: { text: string; to?: string }[] = [
+	{ text: 'I teach myself the tools a problem needs, then build the thing carefully. So far that’s meant a ' },
+	{ text: 'published online experiment', to: 'research' },
+	{ text: ', a handful of ' },
+	{ text: 'games in Unity', to: 'games' },
+	{ text: ', six years on a ' },
+	{ text: 'kitesurfing beach', to: 'water' },
+	{ text: ', and leading a ' },
+	{ text: 'team through the dinner rush', to: 'service' },
+	{ text: '.' },
 ];
 
-export type Project = {
+export type Entry = {
+	id: string;
+	years: string;
 	title: string;
-	year: string;
+	org?: string;
+	kind: string;
 	summary: string;
-	tags: string[];
-	href?: string;
+	points?: string[];
+	stats?: { value: string; label: string }[];
+	tools?: string[];
+	link?: { label: string; href: string };
 };
 
-export const projects: Project[] = [
+// The Index: newest first.
+export const entries: Entry[] = [
 	{
-		title: 'Perceptual & Cognitive Racial Bias Study',
-		year: '2020–22',
-		summary:
-			'Designed, programmed, and launched a 144-trial online experiment replicating the Implicit Association Test and Race-Lightness Task. Piloted trial logic, randomization, and timing before launch, then analyzed participant data in MATLAB. Published in the UF Journal of Undergraduate Research.',
-		tags: ['JavaScript', 'jsPsych', 'MATLAB', 'Research design'],
-		href: 'https://journals.flvc.org/UFJUR/article/view/130769',
+		id: 'service',
+		years: '2026—',
+		title: 'Server & food runner head coach',
+		org: 'Ruth’s Chris Steakhouse',
+		kind: 'Leadership',
+		summary: 'High-volume fine dining, where details like allergens are a safety system.',
+		points: [
+			'As head coach, led a team of 5 food runners — delegating and re-prioritizing in real time during peak service.',
+			'Communicate menu, ingredient, and allergen information precisely; coordinate with the kitchen to prevent allergic reactions.',
+		],
 	},
 	{
-		title: 'Independent Games',
-		year: '2020–now',
-		summary:
-			'Personal game projects taken from initial concept to completed build — programming gameplay in C#, building in Unity, and modeling assets in Blender.',
-		tags: ['C#', 'Unity', 'Blender'],
-	},
-];
-
-export type Job = {
-	role: string;
-	org: string;
-	dates: string;
-	note: string;
-};
-
-export const experience: Job[] = [
-	{
-		role: 'Server / Food Runner Head Coach',
-		org: "Ruth's Chris Steakhouse",
-		dates: '2026 — now',
-		note: 'Led a team of 5 food runners during peak service; coordinate with the kitchen on allergen safety in a high-volume setting.',
+		id: 'games',
+		years: '2020—',
+		title: 'Independent games',
+		kind: 'Games',
+		summary: 'Personal projects taken from first concept to a finished, playable build.',
+		points: [
+			'Taught myself C# and the Unity engine to program gameplay and systems.',
+			'Model and prepare 3D assets in Blender.',
+		],
+		tools: ['C#', 'Unity', 'Blender'],
 	},
 	{
-		role: 'Kitesurfing Instructor',
+		id: 'water',
+		years: '2019–25',
+		title: 'Kitesurfing instructor, assistant manager',
 		org: 'Real Watersports',
-		dates: '2023 — 2025',
-		note: 'Taught beginner and intermediate students, ran safety briefings, and gave targeted technique feedback.',
+		kind: 'Teaching',
+		summary: 'Six and a half years at a watersports school — first running the shop, then teaching on the water.',
+		points: [
+			'Taught beginner and intermediate kitesurfers: safety briefings, spotting technique errors, and giving targeted corrective feedback.',
+			'As assistant manager, trained and supported 10–15 seasonal staff in customer service, sales, rentals, and safety.',
+			'Tracked and coordinated more than $100,000 in rental equipment.',
+		],
+		stats: [
+			{ value: '6.5', label: 'years' },
+			{ value: '10–15', label: 'staff' },
+			{ value: '$100k+', label: 'equipment' },
+		],
 	},
 	{
-		role: 'Assistant Manager',
-		org: 'Real Watersports',
-		dates: '2019 — 2023',
-		note: 'Managed and trained 10–15 seasonal staff; tracked and coordinated over $100,000 in rental equipment.',
-	},
-	{
-		role: 'Research Assistant',
+		id: 'research',
+		years: '2020–22',
+		title: 'Perceptual & cognitive racial bias study',
 		org: 'University of Florida',
-		dates: '2020 — 2022',
-		note: 'Built and ran an IRB-approved online experiment end to end; met weekly with the faculty PI; presented at the Undergraduate Research Expo.',
+		kind: 'Research',
+		summary:
+			'Designed, programmed, and launched an online experiment replicating the Implicit Association Test and the Race-Lightness Task.',
+		points: [
+			'Learned JavaScript and jsPsych independently to build the 144-trial study, implementing the IRB-approved protocol and informed consent flow.',
+			'Piloted and debugged trial logic, randomization, timing, and real-time data capture before launch.',
+			'Applied completion criteria to 37 sessions, organized data from 28 participants, and wrote MATLAB to compute per-participant metrics and correlations.',
+			'Published in the UF Journal of Undergraduate Research; presented at the Undergraduate Research Expo.',
+		],
+		stats: [
+			{ value: '144', label: 'trials' },
+			{ value: '2', label: 'paradigms' },
+			{ value: '37', label: 'sessions' },
+			{ value: '28', label: 'kept' },
+		],
+		tools: ['JavaScript', 'jsPsych', 'MATLAB'],
+		link: {
+			label: 'Read the paper',
+			href: 'https://journals.flvc.org/UFJUR/article/view/130769',
+		},
+	},
+	{
+		id: 'education',
+		years: '2018–22',
+		title: 'BS Psychology, minor in Philosophy',
+		org: 'University of Florida',
+		kind: 'Education',
+		summary: 'Human-subjects research methods, perception and cognition, and a philosophy minor on the side.',
+		points: [
+			'Fisher, N., Maskas, V., Sans, A., Kvam, P., & Odegaard, B. (2022). An Exploration of Relationships Between Perceptual and Cognitive Racial Biases. UF Journal of Undergraduate Research, 24.',
+		],
 	},
 ];
 
-export const publication = {
-	citation:
-		'Fisher, N., Maskas, V., Sans, A., Kvam, P., & Odegaard, B. (2022). An Exploration of Relationships Between Perceptual and Cognitive Racial Biases.',
-	venue: 'UF Journal of Undergraduate Research, 24',
-	href: 'https://journals.flvc.org/UFJUR/article/view/130769',
-};
-
-export const education = {
-	degree: 'BS Psychology, Philosophy Minor',
-	school: 'University of Florida',
-	dates: '2018 — 2022',
-};
-
-export const skills = [
-	'JavaScript',
-	'C#',
-	'MATLAB',
-	'Unity',
-	'Blender',
-	'Experiment design',
-	'Human subjects research',
-	'ICH-GCP',
-	'Data cleaning',
-	'Brazilian Portuguese',
-];
+// Rendered as a sentence, not a tag cloud.
+export const methods =
+	'I write JavaScript, C#, and MATLAB; build in Unity and Blender; design and run human-subjects studies with ICH-GCP in mind; clean data until it’s boring; and speak Brazilian Portuguese.';
