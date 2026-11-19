@@ -45,7 +45,7 @@ export const entries: Entry[] = [
 		title: 'Ruth’s Chris Steakhouse',
 		org: 'Server & food runner head coach',
 		kind: 'Leadership',
-		summary: 'High-volume fine dining without compromising precise detail or positive guest experiences.',
+		summary: 'High-volume fine dining, precise details, and positive guest experiences.',
 		points: [
 			'Communicate menu, ingredient, and allergen information precisely; coordinate with the kitchen to prevent allergic reactions.',
 			'As head coach, led a team of 5 food runners — delegating and re-prioritizing in real time during peak service.',
