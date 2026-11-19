@@ -1,9 +1,11 @@
 ---
-// The hero: just the name.
-// Two motions (both disabled under prefers-reduced-motion):
+// The hero: just the name, centered, with wind moving through it.
+// Three motions (all disabled under prefers-reduced-motion):
 //   1. Wind — gusts sweep across the letters as waves of font weight (Funnel Display's
 //      300–800 wght axis). The cursor/finger acts as wind too, and fast scrolling kicks up a gust.
-//   2. Morph — as you scroll, the name shrinks into the header slot [data-header-name] and hands off.
+//   2. Particles — faint streaks drift left→right behind the name. Gusts are shared: where a gust
+//      front is passing through the letters, the streaks at that x speed up and stretch.
+//   3. Morph — as you scroll, the name shrinks into the header slot [data-header-name] and hands off.
 interface Props {
 	name: string;
 }
@@ -11,10 +13,11 @@ const { name } = Astro.props;
 const words = name.split(' ');
 ---
 
-<section class="hero relative flex min-h-[calc(100svh-4rem)] flex-col justify-end pb-10 sm:pb-14" aria-label="Introduction">
-	<h1 class="name font-display leading-[0.86] tracking-[-0.035em]" data-hero-name>
+<section class="hero relative flex min-h-[calc(100svh-3.5rem)] items-center justify-center" aria-label="Introduction" data-hero>
+	<canvas class="wind" data-wind aria-hidden="true"></canvas>
+	<h1 class="name relative text-center font-display leading-[0.86] tracking-[-0.035em]" data-hero-name>
 		<span class="sr-only">{name}</span>
-		<span aria-hidden="true" class="block origin-top-left will-change-transform" data-hero-inner>
+		<span aria-hidden="true" class="inline-block origin-top-left will-change-transform" data-hero-inner>
 			{
 				words.map((w, wi) => (
 					<span class="word">
@@ -56,68 +59,84 @@ const words = name.split(' ');
 	.ch {
 		font-weight: var(--w, 340);
 	}
+	/* Full-bleed particle layer: spans the viewport width and runs up under the header */
+	.wind {
+		position: absolute;
+		top: -3.5rem;
+		bottom: 0;
+		left: calc(50% - 50vw);
+		width: 100vw;
+		height: calc(100% + 3.5rem);
+		pointer-events: none;
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.wind {
+			display: none;
+		}
+	}
 </style>
 
 <script>
+	const hero = document.querySelector<HTMLElement>('[data-hero]');
 	const h1 = document.querySelector<HTMLElement>('[data-hero-name]');
 	const inner = document.querySelector<HTMLElement>('[data-hero-inner]');
 	const slot = document.querySelector<HTMLElement>('[data-header-name]');
+	const canvas = document.querySelector<HTMLCanvasElement>('[data-wind]');
 	const chars = [...document.querySelectorAll<HTMLElement>('[data-ch]')];
 
-	if (h1 && inner && slot && chars.length) {
+	if (hero && h1 && inner && slot && canvas && chars.length) {
 		const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
 		const BASE = 340;
-		const SLOT_W = 520; // header name weight (font-display, matches .header-name)
+		const SLOT_W = 520; // header name weight (matches the [data-header-name] link)
 		const MAX = 800;
+		const n = chars.length;
 
-		// ── Morph: scale the name toward the header slot as it scrolls up ──────────
+		// ── Layout measurements ───────────────────────────────────────────────────
 		let p = 0; // 0 = hero, 1 = docked in header
-		let startTop = 0; // h1 document top
 		let range = 1;
 		let scale1 = 0.12;
-		let dx = 0; // horizontal offset between hero name and header slot
+		let slotLeft = 0;
+		// name bounds in viewport coords at p = 0 (used to place gusts in the particle field)
+		let nameLeft = 0,
+			nameWidth = 1;
 
 		const measure = () => {
 			inner.style.transform = '';
-			const r = h1.getBoundingClientRect();
+			const r = inner.getBoundingClientRect();
 			const s = slot.getBoundingClientRect();
-			startTop = r.top + window.scrollY;
-			range = Math.max(1, startTop - s.top); // natural scroll distance until it reaches the slot
-			const fs = parseFloat(getComputedStyle(h1).fontSize);
-			const slotFs = parseFloat(getComputedStyle(slot).fontSize);
-			scale1 = slotFs / fs;
-			dx = s.left - r.left;
+			range = Math.max(1, r.top + window.scrollY - s.top); // scroll distance until it reaches the slot
+			scale1 = parseFloat(getComputedStyle(slot).fontSize) / parseFloat(getComputedStyle(h1).fontSize);
+			slotLeft = s.left;
+			nameLeft = r.left;
+			nameWidth = r.width;
+			sizeCanvas();
 			update();
+		};
+
+		// The name is centered and its width changes with weight, so read its current
+		// (untransformed) left edge each time — that keeps the docking pixel-exact.
+		const applyTransform = () => {
+			if (reduce.matches) return;
+			const dx = slotLeft - (h1.getBoundingClientRect().left + inner.offsetLeft); // h1 is untransformed
+			inner.style.transform = `translateX(${dx * p}px) scale(${1 + (scale1 - 1) * p})`;
 		};
 
 		const update = () => {
 			p = Math.min(1, Math.max(0, window.scrollY / range));
-			// linear: the name shrinks steadily as it scrolls up into the header
-			const e = p;
-			const sc = 1 + (scale1 - 1) * e;
-			if (!reduce.matches) inner.style.transform = `translateX(${dx * e}px) scale(${sc})`;
-			// cross-fade into the real header name at the very end
-			const hand = Math.min(1, Math.max(0, (p - 0.86) / 0.14));
+			applyTransform();
+			const hand = Math.min(1, Math.max(0, (p - 0.86) / 0.14)); // cross-fade into the header name
 			h1.style.opacity = String(1 - hand);
 			slot.style.opacity = String(hand);
 			slot.style.pointerEvents = hand > 0.5 ? 'auto' : 'none';
+			canvas.style.opacity = String(Math.max(0, 1 - p * 1.8));
 		};
 
-		// ── Wind ──────────────────────────────────────────────────────────────────
-		const n = chars.length;
-		const w = new Float32Array(n).fill(BASE); // current weights
-		let centers: { x: number; y: number }[] = [];
-		const measureCenters = () => {
-			centers = chars.map((c) => {
-				const r = c.getBoundingClientRect();
-				return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
-			});
-		};
-
+		// ── Shared wind state ─────────────────────────────────────────────────────
 		type Gust = { t0: number; dur: number; amp: number; width: number };
 		const gusts: Gust[] = [];
 		const gust = (now: number, amp = 260 + Math.random() * 160) =>
 			gusts.push({ t0: now, dur: 1300 + Math.random() * 700, amp, width: 1.6 + Math.random() * 1.4 });
+		const front = (g: Gust, now: number) => -3 + ((now - g.t0) / g.dur) * (n + 6); // in letter units
 		let nextGust = performance.now() + 700; // first gust shortly after load
 
 		let px = -1e4,
@@ -131,22 +150,72 @@ const words = name.split(' ');
 		window.addEventListener('pointermove', onPointer, { passive: true });
 		window.addEventListener('pointerdown', onPointer, { passive: true });
 
-		let lastY = window.scrollY,
-			lastScrollT = performance.now();
+		// ── Letters ───────────────────────────────────────────────────────────────
+		const w = new Float32Array(n).fill(BASE);
+		let centers: { x: number; y: number }[] = [];
+		const measureCenters = () => {
+			centers = chars.map((c) => {
+				const r = c.getBoundingClientRect();
+				return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
+			});
+		};
 
-		let raf = 0;
-		let running = false;
-		let lastMeasure = 0;
+		// ── Particles ─────────────────────────────────────────────────────────────
+		const ctx = canvas.getContext('2d')!;
+		let W = 0,
+			H = 0,
+			cLeft = 0,
+			cTop = 0;
+		type P = { x: number; y: number; z: number; vx: number; vy: number; ph: number; hot: boolean };
+		const parts: P[] = [];
+		const spawn = (anywhere: boolean): P => ({
+			x: anywhere ? Math.random() * W : -30 - Math.random() * 60,
+			y: Math.random() * H,
+			z: 0.35 + Math.random() * 0.65, // depth: nearer = faster, bigger, darker
+			vx: 0,
+			vy: 0,
+			ph: Math.random() * Math.PI * 2,
+			hot: Math.random() < 0.07, // a few kite-orange ones
+		});
+		let ink = '#121211',
+			kite = '#ff4a1c';
+		const readColors = () => {
+			const cs = getComputedStyle(document.documentElement);
+			ink = cs.getPropertyValue('--color-ink').trim() || ink;
+			kite = cs.getPropertyValue('--color-kite').trim() || kite;
+		};
+		function sizeCanvas() {
+			const r = canvas!.getBoundingClientRect();
+			const dpr = Math.min(2, window.devicePixelRatio || 1);
+			W = r.width;
+			H = r.height;
+			cLeft = r.left;
+			cTop = r.top + window.scrollY;
+			canvas!.width = Math.round(W * dpr);
+			canvas!.height = Math.round(H * dpr);
+			ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+			const target = Math.round(Math.min(150, Math.max(40, (W * H) / 9000)));
+			while (parts.length < target) parts.push(spawn(true));
+			parts.length = target;
+		}
+
+		// ── Frame loop ────────────────────────────────────────────────────────────
+		let raf = 0,
+			running = false,
+			lastMeasure = 0,
+			lastT = performance.now(),
+			lastY = window.scrollY;
+
 		const frame = (now: number) => {
 			raf = 0;
 			if (!running) return;
+			const dt = Math.min(48, now - lastT) / 16.67; // 1 = one 60fps frame
+			lastT = now;
 
 			// fast scroll → a gust
-			const dy = Math.abs(window.scrollY - lastY);
-			const dt = Math.max(16, now - lastScrollT);
-			if (dy / dt > 1.2 && gusts.length < 2) gust(now, 200 + Math.min(260, (dy / dt) * 60));
+			const sv = Math.abs(window.scrollY - lastY) / (dt * 16.67);
+			if (sv > 1.2 && gusts.length < 2) gust(now, 200 + Math.min(260, sv * 60));
 			lastY = window.scrollY;
-			lastScrollT = now;
 
 			if (now > nextGust) {
 				gust(now);
@@ -154,38 +223,83 @@ const words = name.split(' ');
 			}
 			for (let g = gusts.length - 1; g >= 0; g--) if (now - gusts[g].t0 > gusts[g].dur) gusts.splice(g, 1);
 
-			// the hero name settles toward the header weight as it docks
-			const base = BASE + (SLOT_W - BASE) * p;
 			const pointerLive = now - pointerT < 2500 && p < 0.05;
 			if (pointerLive && now - lastMeasure > 250) {
 				measureCenters(); // throttled: reading layout every frame would thrash
 				lastMeasure = now;
 			}
 
+			// letters
+			const base = BASE + (SLOT_W - BASE) * p; // settle toward header weight as it docks
 			for (let i = 0; i < n; i++) {
 				let target = base + Math.sin(now / 1400 + i * 0.7) * 10; // faint breathing
 				for (const g of gusts) {
-					// gust front travels left → right, past both ends
-					const front = -3 + ((now - g.t0) / g.dur) * (n + 6);
-					const d = (i - front) / g.width;
+					const d = (i - front(g, now)) / g.width;
 					target += g.amp * Math.exp(-d * d);
 				}
 				if (pointerLive && centers[i]) {
-					const dx = centers[i].x - px,
-						dyy = centers[i].y - py;
-					const R = 160;
-					target += 300 * Math.exp(-(dx * dx + dyy * dyy) / (R * R));
+					const ddx = centers[i].x - px,
+						ddy = centers[i].y - py;
+					target += 300 * Math.exp(-(ddx * ddx + ddy * ddy) / (160 * 160));
 				}
 				target = Math.min(MAX, target);
-				w[i] += (target - w[i]) * 0.14; // ease toward target
+				w[i] += (target - w[i]) * 0.14;
 				chars[i].style.setProperty('--w', w[i].toFixed(0));
 			}
+			if (p > 0) applyTransform(); // weights changed the width; re-pin the left edge
+
+			// particles (skip drawing once faded out)
+			if (p < 0.56) {
+				ctx.clearRect(0, 0, W, H);
+				const letterPx = nameWidth / n;
+				const gx = gusts.map((g) => ({
+					x: nameLeft - cLeft + front(g, now) * letterPx, // gust front in canvas px
+					s: g.width * letterPx * 1.6,
+					a: g.amp / 400,
+				}));
+				const pcx = px - cLeft,
+					pcy = py - (cTop - window.scrollY);
+				for (const q of parts) {
+					let target = 0.45 + q.z * 0.9; // steady breeze
+					for (const g of gx) {
+						const d = (q.x - g.x) / g.s;
+						target += g.a * 9 * q.z * Math.exp(-d * d);
+					}
+					q.vx += (target - q.vx) * 0.07 * dt;
+					if (pointerLive) {
+						const ddx = q.x - pcx,
+							ddy = q.y - pcy,
+							d2 = ddx * ddx + ddy * ddy;
+						if (d2 < 140 * 140) {
+							const f = (1 - Math.sqrt(d2) / 140) * 0.6;
+							q.vy += (ddy >= 0 ? 1 : -1) * f;
+							q.vx += f * 0.6;
+						}
+					}
+					q.vy *= 0.9;
+					q.x += q.vx * dt;
+					q.y += (Math.sin(now / 1100 + q.ph) * 0.18 * q.z + q.vy) * dt;
+					if (q.x > W + 40 || q.y < -20 || q.y > H + 20) Object.assign(q, spawn(false));
+
+					const len = 3 + q.vx * 5; // faster → longer streak
+					ctx.globalAlpha = (q.hot ? 0.55 : 0.12 + 0.22 * q.z) * Math.min(1, (q.x + 30) / 120);
+					ctx.strokeStyle = q.hot ? kite : ink;
+					ctx.lineWidth = 0.6 + q.z * 0.9;
+					ctx.beginPath();
+					ctx.moveTo(q.x - len, q.y);
+					ctx.lineTo(q.x, q.y);
+					ctx.stroke();
+				}
+				ctx.globalAlpha = 1;
+			}
+
 			raf = requestAnimationFrame(frame);
 		};
 
 		const start = () => {
 			if (running || reduce.matches || document.hidden) return;
 			running = true;
+			lastT = performance.now();
 			measureCenters();
 			raf = requestAnimationFrame(frame);
 		};
@@ -196,7 +310,7 @@ const words = name.split(' ');
 		};
 
 		// Only animate while the hero is on screen
-		new IntersectionObserver(([e]) => (e.isIntersecting && p < 1 ? start() : stop())).observe(h1);
+		new IntersectionObserver(([e]) => (e.isIntersecting ? start() : stop())).observe(hero);
 		document.addEventListener('visibilitychange', () => (document.hidden ? stop() : start()));
 		reduce.addEventListener('change', () => {
 			if (reduce.matches) {
@@ -206,9 +320,11 @@ const words = name.split(' ');
 			} else start();
 			update();
 		});
+		window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', readColors);
 
 		window.addEventListener('scroll', update, { passive: true });
 		window.addEventListener('resize', measure);
+		readColors();
 		document.fonts.ready.then(measure);
 		measure();
 		start();

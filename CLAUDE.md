@@ -34,10 +34,12 @@ Personal portfolio site. Two goals: (1) ship a real, deeply customizable portfol
 
 ## Design (v3)
 Lab-grey + kite-orange minimalism; the name is the hero. History: v2 had a reaction-time "study" and an intro paragraph — both removed by Nathan as too gimmicky / wordy. Don't reintroduce them.
-- Hero (`src/components/Hero.astro`): just the name, anchored at the bottom of the first screen.
+- Hero (`src/components/Hero.astro`): just the name, centered in the first screen.
   - Wind: gusts sweep left→right as waves of font weight (Funnel Display wght 300–800, base 340). Cursor/finger acts as wind; fast scroll kicks up a gust. Paused off-screen / hidden tab.
+  - Particles: canvas of faint wind streaks (a few kite-orange) drifting left→right behind the name; gusts are shared with the letters, so streaks speed up/stretch where the gust front is. Pointer scatters them. Fade out as the name docks.
   - Morph: on scroll the name scales linearly into the fixed header slot `[data-header-name]` and cross-fades into it at the end (pixel-aligned).
-  - `prefers-reduced-motion`: no wind, no scaling (cross-fade only).
+  - `prefers-reduced-motion`: no wind, no particles, no scaling (cross-fade only).
+  - Docking reads the name's live left edge each frame (it is centered and its width changes with weight) — keep that, or docking drifts.
 - Palette: lab-grey paper `#ecebe7`, one "kite orange" (`--color-kite` graphics, `--color-kite-ink` text). Auto light/dark.
 - Type: Funnel Display (name, summaries) + Funnel Sans (UI/body) + IBM Plex Mono only for real data (years, stats). No decorative uppercase mono labels.
 - Motif: the fixation cross `+` — favicon and the Index expand control (+ → ×).
