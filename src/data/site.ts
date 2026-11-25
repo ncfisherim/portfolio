@@ -85,9 +85,9 @@ export const entries: Entry[] = [
 			'Tracked and coordinated more than $100,000 in rental equipment.',
 		],
 		stats: [
-			{ value: '6.5', label: 'years' },
-			{ value: '10–15', label: 'staff' },
-			{ value: '$100k+', label: 'equipment' },
+			{ value: '6.5', label: 'Years' },
+			{ value: '10–15', label: 'Staff' },
+			{ value: '$100k+', label: 'Equipment' },
 		],
 		media: [
 			{
@@ -112,10 +112,10 @@ export const entries: Entry[] = [
 			'Published in the UF Journal of Undergraduate Research; presented at the Undergraduate Research Expo.',
 		],
 		stats: [
-			{ value: '144', label: 'trials' },
-			{ value: '2', label: 'paradigms' },
-			{ value: '37', label: 'sessions' },
-			{ value: '28', label: 'kept' },
+			{ value: '144', label: 'Trials' },
+			{ value: '2', label: 'Paradigms' },
+			{ value: '37', label: 'Sessions' },
+			{ value: '28', label: 'Kept' },
 		],
 		tools: ['JavaScript', 'jsPsych', 'MATLAB'],
 		link: {

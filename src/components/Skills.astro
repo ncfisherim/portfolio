@@ -124,7 +124,7 @@ const { groups } = Astro.props;
 			const ids = proofOf(b);
 			ids.forEach((id) => entry(id)?.setAttribute('data-proof-hl', ''));
 			used.textContent = '';
-			used.append(`${b.textContent?.trim()} → used in `);
+			used.append(`${b.textContent?.trim()} → Used in `);
 			ids.forEach((id, i) => {
 				const a = document.createElement('a');
 				a.href = `#entry-${id}`;
