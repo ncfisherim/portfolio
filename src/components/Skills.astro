@@ -24,7 +24,7 @@ const { groups } = Astro.props;
 			{
 				groups.map((g) => (
 					<div>
-						<h3 class="mb-2.5 text-xs text-muted">{g.group}</h3>
+						<h3 class="mb-2.5 font-display text-base font-medium text-ink sm:text-[1.0625rem]">{g.group}</h3>
 						<ul class="space-y-1">
 							{g.items.map((s) => (
 								<li>
@@ -64,15 +64,15 @@ const { groups } = Astro.props;
 		display: inline;
 		text-align: left;
 		font-family: var(--font-display);
-		font-size: 1.0625rem;
-		line-height: 1.35;
+		font-size: 0.875rem;
+		line-height: 1.5;
 		letter-spacing: -0.01em;
 		font-weight: var(--w, 380);
 		color: var(--color-ink);
 	}
 	@media (min-width: 640px) {
 		.skill {
-			font-size: 1.1875rem;
+			font-size: 0.9375rem;
 		}
 	}
 	/* Linked skills: a dotted underline says "this goes somewhere" */
