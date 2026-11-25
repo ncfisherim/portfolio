@@ -1,6 +1,11 @@
 ---
 import { Image } from 'astro:assets';
-import type { Entry } from '../data/site';
+import { termLinks, type Entry } from '../data/site';
+
+// Split text so terms in termLinks (site.ts) render as outbound links
+const terms = Object.keys(termLinks);
+const termRe = terms.length ? new RegExp(`\\b(${terms.join('|')})\\b`) : null;
+const linkify = (text: string) => (termRe ? text.split(termRe) : [text]);
 
 interface Props {
 	id: string;
@@ -79,13 +84,34 @@ const { id, title, entries, class: className = '' } = Astro.props;
 									{e.points.map((p) => (
 										<li class="grid grid-cols-[1rem_1fr]">
 											<span class="text-kite" aria-hidden="true">–</span>
-											<span>{p}</span>
+											<span>
+												{linkify(p).map((part) =>
+													termLinks[part] ? (
+														<a class="ul" href={termLinks[part]} target="_blank" rel="noopener">{part}</a>
+													) : (
+														part
+													),
+												)}
+											</span>
 										</li>
 									))}
 								</ul>
 							)}
 
-							{e.tools && <p class="mt-6 font-mono text-xs text-muted">{e.tools.join(' / ')}</p>}
+							{e.tools && (
+							<p class="mt-6 font-mono text-xs text-muted">
+								{e.tools.map((t, i) => (
+									<>
+										{i > 0 && ' / '}
+										{termLinks[t] ? (
+											<a class="ul hover:text-ink" href={termLinks[t]} target="_blank" rel="noopener">{t}</a>
+										) : (
+											t
+										)}
+									</>
+								))}
+							</p>
+						)}
 						</div>
 					</div>
 				</details>

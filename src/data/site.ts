@@ -19,6 +19,10 @@ export const profile = {
 	],
 };
 
+// Terms that link out wherever they appear in entry bullets and tool lists.
+export const termLinks: Record<string, string> = {
+	jsPsych: 'https://www.jspsych.org',
+};
 
 export type Entry = {
 	id: string;
@@ -119,7 +123,7 @@ export const entries: Entry[] = [
 		],
 		tools: ['JavaScript', 'jsPsych', 'MATLAB'],
 		link: {
-			label: 'Read the paper',
+			label: 'Read The Paper',
 			href: 'https://journals.flvc.org/UFJUR/article/view/130769',
 		},
 	},
