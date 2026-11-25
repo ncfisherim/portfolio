@@ -61,7 +61,7 @@ const { id, title, entries, class: className = '' } = Astro.props;
 					<div class="grid gap-x-6 pb-8 sm:grid-cols-[6.5rem_1fr_9rem_1.5rem]">
 						<div class="sm:col-start-2 sm:col-end-4 max-w-2xl">
 							{e.link && (
-								<a class="ul mb-3 inline-block text-sm font-medium text-kite-ink" href={e.link.href} target="_blank" rel="noopener">
+								<a class="ul mb-4 inline-block text-base font-medium text-kite-ink sm:text-lg" href={e.link.href} target="_blank" rel="noopener">
 									{e.link.label}
 									<span aria-hidden="true"> ↗</span>
 									<span class="sr-only"> (opens in new tab)</span>
