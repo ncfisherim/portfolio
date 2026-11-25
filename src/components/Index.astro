@@ -47,12 +47,9 @@ const { id, title, entries, class: className = '' } = Astro.props;
 								</span>
 							)}
 							{e.sublist && (
-								<span class="mt-1.5 block space-y-0.5 text-sm text-muted">
+								<span class="block text-sm text-muted">
 									{e.sublist.map((item) => (
-										<span class="grid grid-cols-[1rem_1fr]">
-											<span class="text-kite" aria-hidden="true">–</span>
-											<span>{item}</span>
-										</span>
+										<span class="block">{item}</span>
 									))}
 								</span>
 							)}

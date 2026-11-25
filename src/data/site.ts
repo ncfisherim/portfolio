@@ -31,7 +31,7 @@ export type Entry = {
 	years: string;
 	title: string;
 	org?: string;
-	sublist?: string[]; // short bullets shown in the row itself, under org (e.g. minors)
+	sublist?: string[]; // short lines shown in the row itself, under org (e.g. minors)
 	kind: string;
 	summary?: string; // in the opened entry; on a plain row (nothing to expand) it shows under the title
 	points?: string[];
@@ -141,7 +141,6 @@ export const entries: Entry[] = [
 		org: 'BS Psychology',
 		sublist: ['Minor in Philosophy', 'Minor in French'],
 		kind: 'Degree',
-		summary: 'Coursework in research methods, neuroanatomy, and abnormal psychology.',
 	},
 ];
 
