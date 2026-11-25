@@ -24,9 +24,14 @@ const { id, title, entries, class: className = '' } = Astro.props;
 
 	<div>
 		{
-			entries.map((e) => (
-				<details class="entry group scroll-mt-20 border-b border-line" id={`entry-${e.id}`} open={e.open}>
-					<summary class="grid grid-cols-[5.5rem_1fr_1.5rem] items-baseline gap-x-4 py-6 transition-colors hover:bg-ink/[0.03] sm:grid-cols-[6.5rem_1fr_9rem_1.5rem] sm:gap-x-6 sm:py-8">
+			entries.map((e) => {
+				// Entries with nothing to reveal are a plain row: no <details>, no +.
+				const expandable = !!(e.points || e.media || e.stats || e.link || e.tools || e.citation);
+				const Wrap = expandable ? 'details' : 'div';
+				const Row = expandable ? 'summary' : 'div';
+				return (
+				<Wrap class="entry group scroll-mt-20 border-b border-line" id={`entry-${e.id}`} open={expandable ? e.open : undefined}>
+					<Row class:list={['grid grid-cols-[5.5rem_1fr_1.5rem] items-baseline gap-x-4 py-6 sm:grid-cols-[6.5rem_1fr_9rem_1.5rem] sm:gap-x-6 sm:py-8', expandable && 'transition-colors hover:bg-ink/[0.03]']}>
 						<span class="kind font-display text-[0.8125rem] font-medium text-ink sm:text-[0.9375rem]">{e.kind}</span>
 						<span>
 							<span class="block text-[1.0625rem] leading-snug font-medium sm:text-lg" data-title>{e.title}</span>
@@ -51,11 +56,13 @@ const { id, title, entries, class: className = '' } = Astro.props;
 									))}
 								</span>
 							)}
+							{!expandable && e.summary && <span class="mt-1.5 block text-sm text-muted">{e.summary}</span>}
 							<span class="mt-0.5 block font-mono text-xs tabular-nums text-muted sm:hidden">{e.years}</span>
 						</span>
 						<span class="hidden text-right font-mono text-xs tabular-nums text-muted sm:block">{e.years}</span>
-						<span class="cross justify-self-end font-mono text-xl leading-none" aria-hidden="true">+</span>
-					</summary>
+						{expandable && <span class="cross justify-self-end font-mono text-xl leading-none" aria-hidden="true">+</span>}
+					</Row>
+					{expandable && (
 
 					<div class="grid gap-x-6 pb-8 sm:grid-cols-[6.5rem_1fr_9rem_1.5rem]">
 						<div class="sm:col-start-2 sm:col-end-4 max-w-2xl">
@@ -66,7 +73,7 @@ const { id, title, entries, class: className = '' } = Astro.props;
 									<span class="sr-only"> (opens in new tab)</span>
 								</a>
 							)}
-							<p class="font-display text-base leading-snug sm:text-[1.0625rem]">{e.summary}</p>
+							{e.summary && <p class="font-display text-base leading-snug sm:text-[1.0625rem]">{e.summary}</p>}
 
 							{e.media && (
 								<div class:list={['mt-6', e.media.length > 1 && 'media-row']}>
@@ -131,10 +138,19 @@ const { id, title, entries, class: className = '' } = Astro.props;
 								))}
 							</p>
 						)}
+						{e.citation && (
+							<p class="mt-6 max-w-xl text-xs leading-relaxed text-muted">
+								{/* bold the first author ("Fisher, N.") */}
+								<span class="font-medium text-ink">{e.citation.split(', ').slice(0, 2).join(', ')}</span>
+								{', ' + e.citation.split(', ').slice(2).join(', ')}
+							</p>
+						)}
 						</div>
 					</div>
-				</details>
-			))
+					)}
+				</Wrap>
+				);
+			})
 		}
 	</div>
 </section>

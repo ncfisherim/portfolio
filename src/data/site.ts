@@ -33,11 +33,12 @@ export type Entry = {
 	org?: string;
 	sublist?: string[]; // short bullets shown in the row itself, under org (e.g. minors)
 	kind: string;
-	summary: string;
+	summary?: string; // in the opened entry; on a plain row (nothing to expand) it shows under the title
 	points?: string[];
 	stats?: { value: string; label: string }[];
 	tools?: string[];
 	link?: { label: string; href: string };
+	citation?: string; // full reference, shown at the bottom of the opened entry
 	media?: { src: ImageMetadata; alt: string; caption?: string }[];
 };
 
@@ -129,6 +130,8 @@ export const entries: Entry[] = [
 			label: 'Read The Paper',
 			href: 'https://journals.flvc.org/UFJUR/article/view/130769',
 		},
+		citation:
+			'Fisher, N., Maskas, V., Sans, A., Kvam, P., & Odegaard, B. (2022). An Exploration of Relationships Between Perceptual and Cognitive Racial Biases. UF Journal of Undergraduate Research, 24.',
 	},
 	{
 		id: 'education',
@@ -139,9 +142,6 @@ export const entries: Entry[] = [
 		sublist: ['Minor in Philosophy', 'Minor in French'],
 		kind: 'Degree',
 		summary: 'Coursework in research methods, neuroanatomy, and abnormal psychology.',
-		points: [
-			'Fisher, N., Maskas, V., Sans, A., Kvam, P., & Odegaard, B. (2022). An Exploration of Relationships Between Perceptual and Cognitive Racial Biases. UF Journal of Undergraduate Research, 24.',
-		],
 	},
 ];
 
