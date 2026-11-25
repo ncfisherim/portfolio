@@ -106,7 +106,7 @@ export const entries: Entry[] = [
 		section: 'research',
 		open: true, // the strongest entry: don't hide it behind a +
 		years: '2020–22',
-		title: 'Perceptual & cognitive racial bias study',
+		title: 'Perceptual & Cognitive Racial Bias Study',
 		org: 'University of Florida',
 		kind: 'Research',
 		summary:
