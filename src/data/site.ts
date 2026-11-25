@@ -184,7 +184,7 @@ export const skills: { group: string; items: Skill[] }[] = [
 		],
 	},
 	{
-		group: 'People',
+		group: 'Communication',
 		items: [
 			{
 				name: 'Team leadership',
