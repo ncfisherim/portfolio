@@ -13,8 +13,8 @@ const { id, title, entries, class: className = '' } = Astro.props;
 
 <section id={id} aria-labelledby={`${id}-h`} class:list={['scroll-mt-20', className]}>
 	<div class="flex items-baseline justify-between border-b-2 border-kite pb-3">
-		<h2 id={`${id}-h`} class="text-sm font-medium text-kite-ink">{title}</h2>
-		<span class="font-mono text-xs text-muted">{entries.length} {entries.length === 1 ? 'entry' : 'entries'} · newest first</span>
+		<h2 id={`${id}-h`} class="font-display text-2xl font-medium tracking-[-0.015em] text-kite-ink sm:text-3xl">{title}</h2>
+		<span class="shrink-0 font-mono text-xs text-muted">{entries.length} {entries.length === 1 ? 'entry' : 'entries'}<span class="hidden sm:inline"> · newest first</span></span>
 	</div>
 
 
