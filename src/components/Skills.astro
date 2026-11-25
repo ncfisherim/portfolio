@@ -12,10 +12,14 @@ interface Props {
 const { groups } = Astro.props;
 ---
 
-<section id="skills" aria-labelledby="skills-h" class="grid scroll-mt-20 gap-6 py-16 sm:grid-cols-[6.5rem_1fr] lg:py-24" data-skills>
-	<h2 id="skills-h" class="font-display text-2xl font-medium tracking-[-0.015em] text-kite-ink sm:text-3xl">Skills</h2>
+<section id="skills" aria-labelledby="skills-h" class="scroll-mt-20 py-16 lg:py-24" data-skills>
+	<!-- Same heading treatment as Research/Work: 2px kite rule under the title -->
+	<div class="border-b-2 border-kite pb-3">
+		<h2 id="skills-h" class="font-display text-2xl font-medium tracking-[-0.015em] text-kite-ink sm:text-3xl">Skills</h2>
+	</div>
 
-	<div>
+	<!-- groups line up with the entry titles above (6.5rem column + 1.5rem gap) -->
+	<div class="mt-8 sm:pl-32">
 		<div class="grid grid-cols-2 gap-x-6 gap-y-9 lg:grid-cols-3 lg:gap-x-10">
 			{
 				groups.map((g) => (
