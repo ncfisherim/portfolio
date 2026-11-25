@@ -206,8 +206,9 @@ export const skills: { group: string; items: Skill[] }[] = [
 	{
 		group: 'Languages',
 		items: [
-			{ name: 'English', note: 'native' },
-			{ name: 'Brazilian Portuguese', note: 'conversational' },
+			{ name: 'English' },
+			{ name: 'Brazilian Portuguese' },
+			{ name: 'French' },
 		],
 	},
 ];

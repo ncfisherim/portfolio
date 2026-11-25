@@ -31,15 +31,15 @@ import { profile, entries, skills } from '../data/site';
 
 			<section id="contact" aria-labelledby="contact-h" class="scroll-mt-20 border-t-2 border-kite pt-6 pb-20 lg:pb-28">
 				<h2 id="contact-h" class="font-display text-2xl font-medium tracking-[-0.015em] text-kite-ink sm:text-3xl">Contact</h2>
-				<div class="mt-10 flex flex-wrap items-baseline gap-x-6 gap-y-3 sm:mt-14">
+				<div class="mt-10 flex flex-wrap items-center gap-x-5 gap-y-3 sm:mt-14">
 					<a
-						class="ul font-display text-[clamp(1.45rem,6vw,4rem)] leading-tight tracking-[-0.02em] break-all sm:break-normal"
+						class="ul font-display text-[clamp(1.35rem,5vw,2.25rem)] leading-tight tracking-[-0.02em] break-all sm:break-normal"
 						href={`mailto:${profile.email}`}>{profile.email}</a
 					>
 					<button
 						type="button"
 						data-copy={profile.email}
-						class="font-mono text-xs text-muted transition-colors hover:text-ink"
+						class="rounded-md border border-ink/25 px-3.5 py-1.5 text-sm font-medium text-ink transition-colors hover:border-kite hover:text-kite-ink focus-visible:border-kite"
 					>
 						<span data-copy-label>Copy</span>
 					</button>

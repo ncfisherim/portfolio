@@ -23,13 +23,13 @@ const { id, title, entries, class: className = '' } = Astro.props;
 			entries.map((e) => (
 				<details class="entry group scroll-mt-20 border-b border-line" id={`entry-${e.id}`}>
 					<summary class="grid grid-cols-[4.25rem_1fr_1.5rem] items-baseline gap-x-4 py-4 transition-colors hover:bg-ink/[0.03] sm:grid-cols-[6.5rem_1fr_9rem_1.5rem] sm:gap-x-6 sm:py-5">
-						<span class="font-mono text-xs tabular-nums text-muted">{e.years}</span>
+						<span class="text-xs text-muted sm:text-sm">{e.kind}</span>
 						<span>
 							<span class="block text-[1.0625rem] leading-snug font-medium sm:text-lg" data-title>{e.title}</span>
 							{e.org && <span class="block text-sm text-muted">{e.org}</span>}
-							<span class="mt-0.5 block text-xs text-muted sm:hidden">{e.kind}</span>
+							<span class="mt-0.5 block font-mono text-xs tabular-nums text-muted sm:hidden">{e.years}</span>
 						</span>
-						<span class="hidden text-sm text-muted sm:block">{e.kind}</span>
+						<span class="hidden text-right font-mono text-xs tabular-nums text-muted sm:block">{e.years}</span>
 						<span class="cross justify-self-end font-mono text-xl leading-none" aria-hidden="true">+</span>
 					</summary>
 
