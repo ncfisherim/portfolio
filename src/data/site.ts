@@ -26,7 +26,8 @@ export const termLinks: Record<string, string> = {
 
 export type Entry = {
 	id: string;
-	section: 'research' | 'work'; // which list it appears in
+	section: 'research' | 'work' | 'education'; // which list it appears in
+	open?: boolean; // start expanded
 	years: string;
 	title: string;
 	org?: string;
@@ -40,7 +41,7 @@ export type Entry = {
 };
 
 // All entries, newest first. `section` decides whether they show under
-// Research Experience or Work Experience.
+// Research Experience, Work Experience, or Education.
 export const entries: Entry[] = [
 	{
 		id: 'service',
@@ -103,6 +104,7 @@ export const entries: Entry[] = [
 	{
 		id: 'research',
 		section: 'research',
+		open: true, // the strongest entry: don't hide it behind a +
 		years: '2020–22',
 		title: 'Perceptual & cognitive racial bias study',
 		org: 'University of Florida',
@@ -129,12 +131,12 @@ export const entries: Entry[] = [
 	},
 	{
 		id: 'education',
-		section: 'research',
+		section: 'education',
 		years: '2018–22',
-		title: 'BS Psychology, minor in Philosophy',
-		org: 'University of Florida',
-		kind: 'Education',
-		summary: 'Research methods, neuroanatomy, and a philosophy minor.',
+		title: 'BS Psychology',
+		org: 'University of Florida · Minors in French and Philosophy',
+		kind: 'Degree',
+		summary: 'Coursework in research methods, neuroanatomy, and abnormal psychology.',
 		points: [
 			'Fisher, N., Maskas, V., Sans, A., Kvam, P., & Odegaard, B. (2022). An Exploration of Relationships Between Perceptual and Cognitive Racial Biases. UF Journal of Undergraduate Research, 24.',
 		],

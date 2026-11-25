@@ -8,14 +8,14 @@ import { profile, entries, skills } from '../data/site';
 
 <Layout>
 	<header class="fixed inset-x-0 top-0 z-40 bg-paper/85 backdrop-blur-md">
-		<div class="mx-auto flex h-14 max-w-6xl items-center justify-between px-4 text-sm sm:px-8 lg:px-12">
+		<div class="mx-auto flex h-14 max-w-6xl items-center justify-between gap-4 px-4 text-sm sm:px-8 lg:px-12">
 			<!-- The hero name shrinks into this slot on scroll (see Hero.astro) -->
 			<a href="/" class="font-display text-[1.0625rem] font-[520] tracking-[-0.01em]" data-header-name>{profile.name}</a>
-			<nav aria-label="Primary" class="flex gap-3.5 text-muted min-[400px]:gap-5">
+			<nav aria-label="Primary" class="flex gap-2.5 text-xs text-muted min-[380px]:gap-3 min-[380px]:text-[0.8125rem] min-[400px]:gap-5 min-[400px]:text-sm">
 				<a class="ul" href="#research">Research</a>
 				<a class="ul" href="#work">Work</a>
 				<a class="ul" href="#contact">Contact</a>
-				<a class="ul hidden sm:inline" href={profile.resume} target="_blank" rel="noopener">Résumé<span class="sr-only"> (PDF, opens in new tab)</span></a>
+				<a class="ul" href={profile.resume} target="_blank" rel="noopener">Résumé<span class="sr-only"> (PDF, opens in new tab)</span></a>
 			</nav>
 		</div>
 	</header>
@@ -26,6 +26,7 @@ import { profile, entries, skills } from '../data/site';
 
 			<Index id="research" title="Research Experience" entries={entries.filter((e) => e.section === 'research')} />
 			<Index id="work" title="Work Experience" class="mt-16 lg:mt-24" entries={entries.filter((e) => e.section === 'work')} />
+			<Index id="education" title="Education" class="mt-16 lg:mt-24" entries={entries.filter((e) => e.section === 'education')} />
 
 			<Skills groups={skills} />
 

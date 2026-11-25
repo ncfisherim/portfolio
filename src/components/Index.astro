@@ -19,19 +19,29 @@ const { id, title, entries, class: className = '' } = Astro.props;
 <section id={id} aria-labelledby={`${id}-h`} class:list={['scroll-mt-20', className]}>
 	<div class="flex items-baseline justify-between border-b-2 border-kite pb-3">
 		<h2 id={`${id}-h`} class="font-display text-2xl font-medium tracking-[-0.015em] text-kite-ink sm:text-3xl">{title}</h2>
-		<span class="shrink-0 font-mono text-xs text-muted">{entries.length} {entries.length === 1 ? 'Entry' : 'Entries'}<span class="hidden sm:inline"> · Newest First</span></span>
+		<span class="shrink-0 font-mono text-xs text-muted">{entries.length} {entries.length === 1 ? 'Entry' : 'Entries'}{entries.length > 1 && <span class="hidden sm:inline"> · Newest First</span>}</span>
 	</div>
 
 
 	<div>
 		{
 			entries.map((e) => (
-				<details class="entry group scroll-mt-20 border-b border-line" id={`entry-${e.id}`}>
+				<details class="entry group scroll-mt-20 border-b border-line" id={`entry-${e.id}`} open={e.open}>
 					<summary class="grid grid-cols-[5.5rem_1fr_1.5rem] items-baseline gap-x-4 py-6 transition-colors hover:bg-ink/[0.03] sm:grid-cols-[6.5rem_1fr_9rem_1.5rem] sm:gap-x-6 sm:py-8">
 						<span class="kind font-display text-[0.8125rem] font-medium text-ink sm:text-[0.9375rem]">{e.kind}</span>
 						<span>
 							<span class="block text-[1.0625rem] leading-snug font-medium sm:text-lg" data-title>{e.title}</span>
-							{e.org && <span class="block text-sm text-muted">{e.org}</span>}
+							{e.org && (
+								<span class="block text-sm text-muted">
+									{/* " · " in org = line break on phones, inline dot on wider screens */}
+									{e.org.split(' · ').map((part, i) => (
+										<>
+											{i > 0 && <span class="hidden sm:inline"> · </span>}
+											<span class="block sm:inline">{part}</span>
+										</>
+									))}
+								</span>
+							)}
 							<span class="mt-0.5 block font-mono text-xs tabular-nums text-muted sm:hidden">{e.years}</span>
 						</span>
 						<span class="hidden text-right font-mono text-xs tabular-nums text-muted sm:block">{e.years}</span>
