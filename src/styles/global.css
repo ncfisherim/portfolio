@@ -93,6 +93,35 @@ body {
 	color: var(--color-kite);
 }
 
+/* Descriptor (Leadership, Games…): led by a kite-orange wind streak, like the hero's
+   particles. Hovering or opening the entry is a gust: the streak stretches. */
+.entry .kind {
+	white-space: nowrap;
+}
+.entry .kind::before {
+	content: '';
+	display: inline-block;
+	vertical-align: 0.3em;
+	margin-right: 0.5em;
+	width: 0.5rem;
+	height: 2px;
+	border-radius: 1px;
+	background: var(--color-kite);
+	transition: width 0.45s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.entry summary:hover .kind::before,
+.entry[data-proof-hl] .kind::before {
+	width: 0.85rem;
+}
+.entry[open] .kind::before {
+	width: 1.15rem;
+}
+@media (max-width: 639px) {
+	.entry[open] .kind::before {
+		width: 0.85rem;
+	}
+}
+
 @media (prefers-reduced-motion: reduce) {
 	html { scroll-behavior: auto; }
 	*, *::before, *::after, .entry::details-content {
