@@ -47,7 +47,7 @@ const { id, title, entries, class: className = '' } = Astro.props;
 									<span class="sr-only"> (opens in new tab)</span>
 								</a>
 							)}
-							<p class="font-display text-xl leading-snug sm:text-2xl">{e.summary}</p>
+							<p class="font-display text-base leading-snug sm:text-[1.0625rem]">{e.summary}</p>
 
 							{e.media && (
 								<div class:list={['mt-6', e.media.length > 1 && 'media-row']}>
