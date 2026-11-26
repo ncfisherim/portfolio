@@ -5,6 +5,27 @@ For the rules Claude Code follows in this project, see `CLAUDE.md`.
 
 ---
 
+## Session 2 — Nov 24–26, 2026
+
+**Next time, start here:** add more spacing between the skills (or bigger hover targets) so it's easier to hover the exact one you want — now that hovering slides the page, a near-miss pulls up the wrong section.
+
+### What changed
+- **Layout:** two columns on wide screens — Research, Work, Projects on the left; Education and a sticky Skills column on the right. Phones stay one column. Every entry starts open. (Git tag `before-two-column` marks the old one-column version.)
+- **Skills ↔ proof:** hovering a skill highlights its exact phrases and slides the left column so that section's heading lines up with the Skills heading. Clicking jumps to the entry; hovers pause for 5s after a click.
+- **Hero:** role line under the name ("Clinical Research · Data Analysis · Human-Subjects Studies"); scroll cue is a floating arrow in a circle.
+- **Content:** Education is its own section (University of Florida, BS Psychology, minors in Philosophy and French); the paper citation sits at the bottom of the research entry; jsPsych links to jspsych.org; Video Game Development moved to Projects.
+- **Style:** bigger orange section headings, orange skill group titles, orange header nav (Résumé as a button), descriptors with a kite "wind streak", outlined Copy button, title-case labels, no entry counters.
+
+### Still open (from the recruiter review)
+1. Research entry: add your role title and lab name.
+2. ICH-GCP: add the certificate (CITI/NIDA GCP, date).
+3. Clinical-trial tools you've actually used (REDCap, EDC, etc.).
+4. Reword Ruth's Chris and Real Watersports bullets toward protocol/compliance/records.
+5. Location and on-site/remote/travel.
+Plus the older items below (research visuals, GitHub profile name, game link, photo credit).
+
+---
+
 ## Session 1 — Nov 18–19, 2026
 
 **Live site:** https://www.nathanfisher.space · **Repo:** https://github.com/ncfisherim/portfolio (public)
@@ -56,7 +77,7 @@ Commands: `npm run dev` (local preview at http://localhost:4321) · `npm run bui
 5. **Video Game Development:** add a game title, GIF or itch.io link.
 6. **Credit the photographer** of the kitesurfing shot, if known.
 7. Optional: Vercel Web Analytics, Google Search Console, a case-study page for the research project, a print-styled `/resume` page.
-8. `README.md` is still Astro's default. Replace it with a short project README.
+8. ~~`README.md` is still Astro's default.~~ Done (Nov 24).
 
 ### What I learned about working with Claude Code
 - **`CLAUDE.md` is the project's memory.** Stack, rules and design decisions written there carry over to every future session.
