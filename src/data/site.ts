@@ -28,7 +28,7 @@ export const termLinks: Record<string, string> = {
 export type Entry = {
 	id: string;
 	section: 'research' | 'work' | 'education' | 'projects'; // which list it appears in
-	open?: boolean; // start expanded
+	open?: boolean; // entries start expanded; set false to start collapsed
 	years: string;
 	title: string;
 	org?: string;
@@ -107,7 +107,6 @@ export const entries: Entry[] = [
 	{
 		id: 'research',
 		section: 'research',
-		open: true, // the strongest entry: don't hide it behind a +
 		years: '2020–22',
 		title: 'Perceptual & Cognitive Racial Bias Study',
 		org: 'University of Florida',

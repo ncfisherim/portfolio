@@ -34,7 +34,7 @@ const rowCols = compact ? 'lg:grid-cols-[1fr_auto] lg:gap-y-1.5' : 'lg:grid-cols
 				const Wrap = expandable ? 'details' : 'div';
 				const Row = expandable ? 'summary' : 'div';
 				return (
-				<Wrap class="entry group scroll-mt-20 border-b border-line" id={`entry-${e.id}`} open={expandable ? e.open : undefined}>
+				<Wrap class="entry group scroll-mt-20 border-b border-line" id={`entry-${e.id}`} open={expandable ? (e.open ?? true) : undefined}>
 					<Row class:list={['grid grid-cols-[5.5rem_1fr_1.5rem] items-baseline gap-x-4 py-5 sm:grid-cols-[6.5rem_1fr_9rem_1.5rem] sm:gap-x-6 sm:py-6', rowCols, expandable && 'transition-colors hover:bg-ink/[0.03]']}>
 						<span class:list={['kind font-display text-[0.8125rem] font-medium text-ink sm:text-[0.9375rem]', compact && 'lg:col-start-1 lg:row-start-1']}>{e.kind}</span>
 						<span class:list={[compact && 'lg:col-start-1 lg:row-start-2']}>
