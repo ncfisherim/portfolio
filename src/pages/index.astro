@@ -22,11 +22,12 @@ import { profile, entries, skills } from '../data/site';
 
 	<div class="mx-auto max-w-6xl px-4 pt-14 sm:px-8 lg:px-12">
 		<main id="main">
-			<Hero name={profile.name} />
+			<Hero name={profile.name} role={profile.role} />
 
 			<Index id="research" title="Research Experience" entries={entries.filter((e) => e.section === 'research')} />
 			<Index id="work" title="Work Experience" class="mt-16 lg:mt-24" entries={entries.filter((e) => e.section === 'work')} />
 			<Index id="education" title="Education" class="mt-16 lg:mt-24" entries={entries.filter((e) => e.section === 'education')} />
+			<Index id="projects" title="Projects" class="mt-16 lg:mt-24" entries={entries.filter((e) => e.section === 'projects')} />
 
 			<Skills groups={skills} />
 

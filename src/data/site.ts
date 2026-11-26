@@ -7,7 +7,8 @@ import blenderGramophone from '../assets/photos/games/blender-gramophone.png';
 
 export const profile = {
 	name: 'Nathan Fisher',
-	role: 'Researcher · Programmer · Game Developer',
+	// Shown under the name in the hero (" · " = line break on phones) and in the social card alt text
+	role: 'Clinical Research · Data Analysis · Human-Subjects Studies',
 	description:
 		'Nathan Fisher — researcher and self-taught programmer. Online behavioral experiments, Unity games, and six years teaching on a kitesurfing beach.',
 	email: 'ncfisherim@outlook.com',
@@ -26,7 +27,7 @@ export const termLinks: Record<string, string> = {
 
 export type Entry = {
 	id: string;
-	section: 'research' | 'work' | 'education'; // which list it appears in
+	section: 'research' | 'work' | 'education' | 'projects'; // which list it appears in
 	open?: boolean; // start expanded
 	years: string;
 	title: string;
@@ -43,7 +44,7 @@ export type Entry = {
 };
 
 // All entries, newest first. `section` decides whether they show under
-// Research Experience, Work Experience, or Education.
+// Research Experience, Work Experience, Education, or Projects.
 export const entries: Entry[] = [
 	{
 		id: 'service',
@@ -60,7 +61,7 @@ export const entries: Entry[] = [
 	},
 	{
 		id: 'games',
-		section: 'work',
+		section: 'projects',
 		years: '2020—',
 		title: 'Video Game Development',
 		kind: 'Games',

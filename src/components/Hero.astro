@@ -8,13 +8,16 @@
 //   3. Morph — as you scroll, the name shrinks into the header slot [data-header-name] and hands off.
 interface Props {
 	name: string;
+	role?: string;
 }
-const { name } = Astro.props;
+const { name, role } = Astro.props;
 const words = name.split(' ');
 ---
 
 <section class="hero relative flex min-h-[calc(100svh-3.5rem)] items-center justify-center" aria-label="Introduction" data-hero>
 	<canvas class="wind" data-wind aria-hidden="true"></canvas>
+	<!-- Wrapper keeps the name itself centered; the role line hangs below it (absolute) -->
+	<div class="relative">
 	<h1 class="name relative text-center font-display leading-[0.86] tracking-[-0.035em]" data-hero-name>
 		<span class="sr-only">{name}</span>
 		<span aria-hidden="true" class="inline-block origin-top-left will-change-transform" data-hero-inner>
@@ -30,6 +33,19 @@ const words = name.split(' ');
 			}
 		</span>
 	</h1>
+	{
+		role && (
+			<p class="role" data-hero-role>
+				{role.split(' · ').map((part, i) => (
+					<>
+						{i > 0 && <span class="role-dot" aria-hidden="true"> · </span>}
+						<span class="role-part">{part}</span>
+					</>
+				))}
+			</p>
+		)
+	}
+	</div>
 	<!-- Scroll cue: a down arrow in a circle, floating gently up and down; fades out as soon as you scroll -->
 	<a href="#research" class="cue" data-cue>
 		<span class="cue-ring" aria-hidden="true">
@@ -83,6 +99,39 @@ const words = name.split(' ');
 		-webkit-user-select: none;
 		user-select: none;
 		-webkit-tap-highlight-color: transparent;
+	}
+	/* Role line under the name: muted, centered; stacked on phones, one line with dots from 640px */
+	.role {
+		position: absolute;
+		top: 100%;
+		left: 50%;
+		transform: translateX(-50%);
+		margin-top: 1.75rem;
+		width: max-content;
+		max-width: calc(100vw - 2rem);
+		text-align: center;
+		font-size: 0.9375rem;
+		line-height: 1.5;
+		color: var(--color-muted);
+	}
+	.role-part {
+		display: block;
+	}
+	.role-dot {
+		display: none;
+		color: var(--color-kite);
+	}
+	@media (min-width: 640px) {
+		.role {
+			margin-top: 2.25rem;
+			font-size: 1.0625rem;
+		}
+		.role-part {
+			display: inline;
+		}
+		.role-dot {
+			display: inline;
+		}
 	}
 	.cue {
 		position: absolute;
@@ -176,6 +225,7 @@ const words = name.split(' ');
 		};
 
 		const cue = document.querySelector<HTMLElement>('[data-cue]');
+		const roleLine = document.querySelector<HTMLElement>('[data-hero-role]');
 		const update = () => {
 			const sy = window.scrollY; // read before writing
 			p = Math.min(1, Math.max(0, sy / range));
@@ -186,6 +236,7 @@ const words = name.split(' ');
 			slot.style.opacity = String(hand);
 			slot.style.pointerEvents = hand > 0.5 ? 'auto' : 'none';
 			canvas.style.opacity = String(Math.max(0, 1 - p * 1.8));
+			if (roleLine) roleLine.style.opacity = String(Math.max(0, 1 - p * 3)); // role line leaves early, before the name shrinks much
 			if (cue) {
 				const o = Math.max(0, 1 - sy / 120); // scroll cue fades as soon as you scroll
 				cue.style.opacity = String(o);
