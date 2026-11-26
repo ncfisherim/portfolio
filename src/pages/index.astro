@@ -24,14 +24,21 @@ import { profile, entries, skills } from '../data/site';
 		<main id="main">
 			<Hero name={profile.name} role={profile.role} />
 
-			<Index id="research" title="Research Experience" entries={entries.filter((e) => e.section === 'research')} />
-			<Index id="work" title="Work Experience" class="mt-16 lg:mt-24" entries={entries.filter((e) => e.section === 'work')} />
-			<Index id="education" title="Education" class="mt-16 lg:mt-24" entries={entries.filter((e) => e.section === 'education')} />
-			<Index id="projects" title="Projects" class="mt-16 lg:mt-24" entries={entries.filter((e) => e.section === 'projects')} />
+			<!-- Two columns from lg: experience wide on the left; Education, Projects, Skills in a
+			     narrow column on the right. Below lg it's one column in the same order. -->
+			<div class="lg:grid lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] lg:items-start lg:gap-x-14">
+				<div>
+					<Index id="research" title="Research Experience" entries={entries.filter((e) => e.section === 'research')} />
+					<Index id="work" title="Work Experience" class="mt-12 lg:mt-16" entries={entries.filter((e) => e.section === 'work')} />
+				</div>
+				<div>
+					<Index id="education" title="Education" class="mt-12 lg:mt-0" compact entries={entries.filter((e) => e.section === 'education')} />
+					<Index id="projects" title="Projects" class="mt-12" compact entries={entries.filter((e) => e.section === 'projects')} />
+					<Skills groups={skills} class="mt-12" compact />
+				</div>
+			</div>
 
-			<Skills groups={skills} />
-
-			<section id="contact" aria-labelledby="contact-h" class="scroll-mt-20 border-t-2 border-kite pt-6 pb-20 lg:pb-28">
+			<section id="contact" aria-labelledby="contact-h" class="mt-16 scroll-mt-20 border-t-2 border-kite pt-6 pb-20 lg:mt-24 lg:pb-28">
 				<h2 id="contact-h" class="font-display text-2xl font-medium tracking-[-0.015em] text-kite-ink sm:text-3xl">Contact</h2>
 				<div class="mt-10 flex flex-wrap items-center gap-x-5 gap-y-3 sm:mt-14">
 					<a

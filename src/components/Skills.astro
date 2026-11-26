@@ -8,19 +8,21 @@ import type { skills as SkillsData } from '../data/site';
 
 interface Props {
 	groups: typeof SkillsData;
+	class?: string;
+	compact?: boolean; // narrow right-hand column on wide screens: no indent, two columns of groups
 }
-const { groups } = Astro.props;
+const { groups, class: className = '', compact = false } = Astro.props;
 ---
 
-<section id="skills" aria-labelledby="skills-h" class="scroll-mt-20 py-16 lg:py-24" data-skills>
+<section id="skills" aria-labelledby="skills-h" class:list={['scroll-mt-20', className]} data-skills>
 	<!-- Same heading treatment as Research/Work: 2px kite rule under the title -->
 	<div class="border-b-2 border-kite pb-3">
 		<h2 id="skills-h" class="font-display text-2xl font-medium tracking-[-0.015em] text-kite-ink sm:text-3xl">Skills</h2>
 	</div>
 
 	<!-- groups line up with the entry titles above (6.5rem column + 1.5rem gap) -->
-	<div class="mt-8 sm:pl-32">
-		<div class="grid grid-cols-2 gap-x-6 gap-y-9 lg:grid-cols-3 lg:gap-x-10">
+	<div class:list={['mt-8 sm:pl-32', compact && 'lg:mt-6 lg:pl-0']}>
+		<div class:list={['grid grid-cols-2 gap-x-6 gap-y-9', compact ? 'lg:gap-y-7' : 'lg:grid-cols-3 lg:gap-x-10']}>
 			{
 				groups.map((g) => (
 					<div>

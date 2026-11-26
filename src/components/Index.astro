@@ -12,8 +12,12 @@ interface Props {
 	title: string;
 	entries: Entry[];
 	class?: string;
+	// compact: for the narrow right-hand column on wide screens (lg+). Rows stack as
+	// "descriptor · years" over "title · +" instead of four columns. Below lg it's the normal row.
+	compact?: boolean;
 }
-const { id, title, entries, class: className = '' } = Astro.props;
+const { id, title, entries, class: className = '', compact = false } = Astro.props;
+const rowCols = compact ? 'lg:grid-cols-[1fr_auto] lg:gap-y-1.5' : 'lg:grid-cols-[6.5rem_1fr_4.5rem_1.5rem]';
 ---
 
 <section id={id} aria-labelledby={`${id}-h`} class:list={['scroll-mt-20', className]}>
@@ -31,9 +35,9 @@ const { id, title, entries, class: className = '' } = Astro.props;
 				const Row = expandable ? 'summary' : 'div';
 				return (
 				<Wrap class="entry group scroll-mt-20 border-b border-line" id={`entry-${e.id}`} open={expandable ? e.open : undefined}>
-					<Row class:list={['grid grid-cols-[5.5rem_1fr_1.5rem] items-baseline gap-x-4 py-6 sm:grid-cols-[6.5rem_1fr_9rem_1.5rem] sm:gap-x-6 sm:py-8', expandable && 'transition-colors hover:bg-ink/[0.03]']}>
-						<span class="kind font-display text-[0.8125rem] font-medium text-ink sm:text-[0.9375rem]">{e.kind}</span>
-						<span>
+					<Row class:list={['grid grid-cols-[5.5rem_1fr_1.5rem] items-baseline gap-x-4 py-5 sm:grid-cols-[6.5rem_1fr_9rem_1.5rem] sm:gap-x-6 sm:py-6', rowCols, expandable && 'transition-colors hover:bg-ink/[0.03]']}>
+						<span class:list={['kind font-display text-[0.8125rem] font-medium text-ink sm:text-[0.9375rem]', compact && 'lg:col-start-1 lg:row-start-1']}>{e.kind}</span>
+						<span class:list={[compact && 'lg:col-start-1 lg:row-start-2']}>
 							<span class="block text-[1.0625rem] leading-snug font-medium sm:text-lg" data-title>{e.title}</span>
 							{e.org && (
 								<span class="block text-sm text-muted">
@@ -56,13 +60,13 @@ const { id, title, entries, class: className = '' } = Astro.props;
 							{!expandable && e.summary && <span class="mt-1.5 block text-sm text-muted">{e.summary}</span>}
 							<span class="mt-0.5 block font-mono text-xs tabular-nums text-muted sm:hidden">{e.years}</span>
 						</span>
-						<span class="hidden text-right font-mono text-xs tabular-nums text-muted sm:block">{e.years}</span>
-						{expandable && <span class="cross justify-self-end font-mono text-xl leading-none" aria-hidden="true">+</span>}
+						<span class:list={['hidden text-right font-mono text-xs tabular-nums text-muted sm:block', compact && 'lg:col-start-2 lg:row-start-1']}>{e.years}</span>
+						{expandable && <span class:list={['cross justify-self-end font-mono text-xl leading-none', compact && 'lg:col-start-2 lg:row-start-2']} aria-hidden="true">+</span>}
 					</Row>
 					{expandable && (
 
-					<div class="grid gap-x-6 pb-8 sm:grid-cols-[6.5rem_1fr_9rem_1.5rem]">
-						<div class="sm:col-start-2 sm:col-end-4 max-w-2xl">
+					<div class:list={['grid gap-x-6 pb-8 sm:grid-cols-[6.5rem_1fr_9rem_1.5rem]', compact ? 'lg:grid-cols-1' : 'lg:grid-cols-[6.5rem_1fr_4.5rem_1.5rem]']}>
+						<div class:list={['sm:col-start-2 sm:col-end-4 max-w-2xl', compact && 'lg:col-start-1 lg:col-end-2']}>
 							{e.link && (
 								<a class="ul mb-4 inline-block text-base font-medium text-kite-ink sm:text-lg" href={e.link.href} target="_blank" rel="noopener">
 									{e.link.label}
