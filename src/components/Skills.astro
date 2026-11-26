@@ -240,15 +240,16 @@ const { groups, class: className = '', compact = false } = Astro.props;
 				const r = m.getBoundingClientRect();
 				return { top: r.top - now, bottom: r.bottom - now };
 			});
-			const visible = rects.some((r) => r.top >= HEADER && r.bottom <= window.innerHeight);
-			if (visible) return slideBack(); // already on screen: nothing to do
-			// Line up the heading of the section holding the first phrase (Research Experience,
-			// Work Experience, Projects) with the Skills heading — two headings side by side.
-			// If that would leave the phrase below the fold, slide just far enough to show it.
+			// Bring the whole section holding the first phrase (Research Experience, Work
+			// Experience, Projects) into view: its heading lines up with the Skills heading.
+			// Skip only if that heading AND the phrase are already on screen as things stand.
 			const head = marks[0].closest('section')?.querySelector('h2');
 			const skillsHead = section.querySelector('h2');
 			if (!head || !skillsHead) return;
 			const headTop = head.getBoundingClientRect().top - now;
+			const onScreen = (top: number, bottom: number) => top >= HEADER && bottom <= window.innerHeight;
+			if (onScreen(headTop, headTop + 1) && onScreen(rects[0].top, rects[0].bottom)) return slideBack();
+			// If lining up the headings would leave the phrase below the fold, slide just far enough to show it.
 			let px = skillsHead.getBoundingClientRect().top - headTop;
 			const lowest = rects[0].bottom + px;
 			if (lowest > window.innerHeight - 24) px -= lowest - (window.innerHeight - 24);
