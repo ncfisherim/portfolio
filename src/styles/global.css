@@ -63,6 +63,41 @@ body {
 	text-decoration-thickness: 2px;
 }
 
+/* Header nav: kite-orange links. Phones: underlined text (no room for more).
+   From 640px: padded hit areas that fill with a tint on hover; Résumé is an outlined button
+   (same family as the Copy button in Contact). */
+.navlink {
+	color: var(--color-kite-ink);
+	font-weight: 500;
+	text-decoration-line: underline;
+	text-decoration-thickness: 1px;
+	text-underline-offset: 0.22em;
+	text-decoration-color: color-mix(in oklab, currentColor 45%, transparent);
+	transition: background-color 0.2s, text-decoration-color 0.2s, border-color 0.2s;
+}
+.navlink:hover {
+	text-decoration-color: currentColor;
+}
+@media (min-width: 640px) {
+	.navlink {
+		padding: 0.3em 0.7em;
+		border-radius: 0.4rem;
+		border: 1.5px solid transparent;
+	}
+	.navlink:hover,
+	.navlink:focus-visible {
+		background: color-mix(in oklab, var(--color-kite) 12%, transparent);
+	}
+	.navlink-cta {
+		margin-left: 0.35rem;
+		text-decoration-line: none;
+		border-color: color-mix(in oklab, var(--color-kite) 55%, transparent);
+	}
+	.navlink-cta:hover {
+		border-color: var(--color-kite);
+	}
+}
+
 /* Index: animated <details> open/close where supported, instant elsewhere */
 .entry {
 	interpolate-size: allow-keywords;

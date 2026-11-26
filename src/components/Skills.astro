@@ -106,6 +106,7 @@ const { groups, class: className = '', compact = false } = Astro.props;
 	const used = document.querySelector<HTMLElement>('[data-skills-used]');
 	if (section && used) {
 		const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+		const canHover = window.matchMedia('(hover: hover) and (pointer: fine)');
 		const hintHTML = used.innerHTML;
 		const words = [...section.querySelectorAll<HTMLElement>('[data-skill]')];
 		const linked = words.filter((w) => w.dataset.proof) as HTMLButtonElement[];
@@ -121,6 +122,7 @@ const { groups, class: className = '', compact = false } = Astro.props;
 		const clearPreview = () => {
 			document.querySelectorAll('.entry[data-proof-hl]').forEach((e) => e.removeAttribute('data-proof-hl'));
 			clearMarks(document, true);
+			slideBack();
 			active?.removeAttribute('data-active');
 			active = null;
 			used.innerHTML = hintHTML;
@@ -138,6 +140,7 @@ const { groups, class: className = '', compact = false } = Astro.props;
 				d.setAttribute('data-proof-hl', '');
 				markIn(d, evidenceOf(b), true);
 			});
+			slideTo(b);
 			used.textContent = '';
 			used.append(`${b.textContent?.trim()} → Used in `);
 			ids.forEach((id, i) => {
@@ -212,7 +215,46 @@ const { groups, class: className = '', compact = false } = Astro.props;
 		);
 
 		// ── Jump: open the proof entries, scroll to the first, flash them ────────
+		// ── Slide: bring off-screen proof in the main column level with the cursor ──
+		// Two-column layout only (lg+), mouse only, not under reduced motion. Only the main
+		// (left) column moves — the skills column stays put, so the pointer stays on the skill.
+		// It's a transform (no layout change); the column wrapper clips it (overflow-y: clip).
+		const mainCol = document.querySelector<HTMLElement>('[data-main-col]');
+		const wide = window.matchMedia('(min-width: 1024px)');
+		const HEADER = 56; // fixed header height
+		let pointerY = window.innerHeight / 2;
+		section.addEventListener('pointermove', (e) => (pointerY = e.clientY));
+		let offset = 0;
+		const setOffset = (px: number, animate = true) => {
+			if (!mainCol) return;
+			offset = px;
+			mainCol.style.transition = animate ? 'transform 0.7s cubic-bezier(0.22, 0.8, 0.24, 1)' : 'none';
+			mainCol.style.transform = px ? `translateY(${px}px)` : '';
+		};
+		const slideTo = (b: HTMLElement) => {
+			if (!mainCol || !wide.matches || !canHover.matches || reduce.matches) return;
+			const marks = [...mainCol.querySelectorAll<HTMLElement>('mark[data-evidence-hover]')];
+			if (!marks.length) return slideBack(); // proof isn't in the main column
+			// Natural (unslid) positions: subtract the column's *current* translate, which may be
+			// mid-transition when moving straight from one skill to another
+			const now = new DOMMatrixReadOnly(getComputedStyle(mainCol).transform).m42 || 0;
+			const rects = marks.map((m) => {
+				const r = m.getBoundingClientRect();
+				return { top: r.top - now, bottom: r.bottom - now };
+			});
+			const visible = rects.some((r) => r.top >= HEADER && r.bottom <= window.innerHeight);
+			if (visible) return slideBack(); // already on screen: nothing to do
+			const target = rects[0];
+			setOffset(Math.round(pointerY - (target.top + target.bottom) / 2));
+		};
+		const slideBack = () => {
+			if (offset) setOffset(0);
+		};
+		// Scrolling while slid would leave things misaligned: settle back
+		window.addEventListener('scroll', () => offset && setOffset(0), { passive: true });
+
 		const jump = (ids: string[], phrases: string[] = []) => {
+			setOffset(0, false); // scroll to the real position, not the slid one
 			const els = ids.map(entry).filter(Boolean) as HTMLDetailsElement[];
 			if (!els.length) return;
 			clearMarks();
@@ -230,9 +272,12 @@ const { groups, class: className = '', compact = false } = Astro.props;
 			history.replaceState(null, '', `#entry-${ids[0]}`);
 		};
 
-		const canHover = window.matchMedia('(hover: hover) and (pointer: fine)');
 		linked.forEach((b) => {
-			b.addEventListener('pointerenter', () => canHover.matches && preview(b));
+			b.addEventListener('pointerenter', (e) => {
+				if (!canHover.matches) return;
+				pointerY = e.clientY; // pointerenter fires before pointermove, so take it from here
+				preview(b);
+			});
 			b.addEventListener('focus', () => preview(b));
 			b.addEventListener('click', () => jump(proofOf(b), evidenceOf(b)));
 		});
