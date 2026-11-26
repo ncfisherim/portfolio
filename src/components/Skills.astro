@@ -215,16 +215,14 @@ const { groups, class: className = '', compact = false } = Astro.props;
 		);
 
 		// ── Jump: open the proof entries, scroll to the first, flash them ────────
-		// ── Slide: bring off-screen proof in the main column level with the cursor ──
+		// ── Slide: bring off-screen proof in the main column into view beside Skills ──
 		// Two-column layout only (lg+), mouse only, not under reduced motion. Only the main
 		// (left) column moves — the skills column stays put, so the pointer stays on the skill.
 		// It's a transform (no layout change); the column wrapper clips it (overflow-y: clip).
 		const mainCol = document.querySelector<HTMLElement>('[data-main-col]');
 		const wide = window.matchMedia('(min-width: 1024px)');
 		const HEADER = 56; // fixed header height
-		let pointerY = window.innerHeight / 2;
-		section.addEventListener('pointermove', (e) => (pointerY = e.clientY));
-		let offset = 0;
+				let offset = 0;
 		const setOffset = (px: number, animate = true) => {
 			if (!mainCol) return;
 			offset = px;
@@ -244,8 +242,17 @@ const { groups, class: className = '', compact = false } = Astro.props;
 			});
 			const visible = rects.some((r) => r.top >= HEADER && r.bottom <= window.innerHeight);
 			if (visible) return slideBack(); // already on screen: nothing to do
-			const target = rects[0];
-			setOffset(Math.round(pointerY - (target.top + target.bottom) / 2));
+			// Line up the heading of the section holding the first phrase (Research Experience,
+			// Work Experience, Projects) with the Skills heading — two headings side by side.
+			// If that would leave the phrase below the fold, slide just far enough to show it.
+			const head = marks[0].closest('section')?.querySelector('h2');
+			const skillsHead = section.querySelector('h2');
+			if (!head || !skillsHead) return;
+			const headTop = head.getBoundingClientRect().top - now;
+			let px = skillsHead.getBoundingClientRect().top - headTop;
+			const lowest = rects[0].bottom + px;
+			if (lowest > window.innerHeight - 24) px -= lowest - (window.innerHeight - 24);
+			setOffset(Math.round(px));
 		};
 		const slideBack = () => {
 			if (offset) setOffset(0);
@@ -273,11 +280,7 @@ const { groups, class: className = '', compact = false } = Astro.props;
 		};
 
 		linked.forEach((b) => {
-			b.addEventListener('pointerenter', (e) => {
-				if (!canHover.matches) return;
-				pointerY = e.clientY; // pointerenter fires before pointermove, so take it from here
-				preview(b);
-			});
+			b.addEventListener('pointerenter', () => canHover.matches && preview(b));
 			b.addEventListener('focus', () => preview(b));
 			b.addEventListener('click', () => jump(proofOf(b), evidenceOf(b)));
 		});
