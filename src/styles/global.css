@@ -156,6 +156,10 @@ mark[data-evidence-hit] {
 	box-decoration-break: clone;
 	animation: evidence-in 1.4s ease-out both;
 }
+/* Hover previews fade in quickly (a click's marks take the slower fade) */
+mark[data-evidence-hover] {
+	animation-duration: 0.35s;
+}
 @keyframes evidence-in {
 	0%, 35% { background: color-mix(in oklab, var(--color-kite) 55%, transparent); }
 }

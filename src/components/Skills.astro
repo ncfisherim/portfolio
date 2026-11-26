@@ -114,10 +114,13 @@ const { groups, class: className = '', compact = false } = Astro.props;
 		const titleOf = (id: string) => entry(id)?.querySelector('[data-title]')?.textContent?.trim() ?? id;
 		const proofOf = (b: HTMLElement) => (b.dataset.proof ?? '').split(' ').filter(Boolean);
 
-		// ── Preview: highlight the proof entries and name them ───────────────────
+		// ── Preview: highlight the proof entries + their exact phrases, and name them ──
+		// Entries are open, so the phrases are visible wherever you are on the page —
+		// not just the entry's title row, which may be scrolled out of view.
 		let active: HTMLElement | null = null;
 		const clearPreview = () => {
 			document.querySelectorAll('.entry[data-proof-hl]').forEach((e) => e.removeAttribute('data-proof-hl'));
+			clearMarks(document, true);
 			active?.removeAttribute('data-active');
 			active = null;
 			used.innerHTML = hintHTML;
@@ -128,7 +131,13 @@ const { groups, class: className = '', compact = false } = Astro.props;
 			active = b;
 			b.setAttribute('data-active', '');
 			const ids = proofOf(b);
-			ids.forEach((id) => entry(id)?.setAttribute('data-proof-hl', ''));
+			clearMarks(); // a new hover also clears phrases left from an earlier click
+			ids.forEach((id) => {
+				const d = entry(id);
+				if (!d) return;
+				d.setAttribute('data-proof-hl', '');
+				markIn(d, evidenceOf(b), true);
+			});
 			used.textContent = '';
 			used.append(`${b.textContent?.trim()} → Used in `);
 			ids.forEach((id, i) => {
@@ -153,15 +162,16 @@ const { groups, class: className = '', compact = false } = Astro.props;
 				return [];
 			}
 		};
-		const clearMarks = (root: ParentNode = document) => {
-			root.querySelectorAll('mark[data-evidence-hit]').forEach((m) => {
+		// hoverOnly: remove just the marks a hover added, keeping the ones from a click
+		const clearMarks = (root: ParentNode = document, hoverOnly = false) => {
+			root.querySelectorAll(hoverOnly ? 'mark[data-evidence-hover]' : 'mark[data-evidence-hit]').forEach((m) => {
 				const parent = m.parentNode!;
 				parent.replaceChild(document.createTextNode(m.textContent ?? ''), m);
 				parent.normalize(); // merge the text back into one node
 			});
 		};
 		const escapeRe = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-		const markIn = (d: HTMLDetailsElement, phrases: string[]) => {
+		const markIn = (d: HTMLDetailsElement, phrases: string[], hover = false) => {
 			if (!phrases.length) return;
 			// longest first so a long phrase wins over a word inside it
 			const re = new RegExp(
@@ -187,6 +197,7 @@ const { groups, class: className = '', compact = false } = Astro.props;
 					if (i > last) frag.append(text.slice(last, i));
 					const mark = document.createElement('mark');
 					mark.setAttribute('data-evidence-hit', '');
+					if (hover) mark.setAttribute('data-evidence-hover', '');
 					mark.textContent = m[0];
 					frag.append(mark);
 					last = i + m[0].length;
