@@ -261,7 +261,13 @@ const { groups, class: className = '', compact = false } = Astro.props;
 		// Scrolling while slid would leave things misaligned: settle back
 		window.addEventListener('scroll', () => offset && setOffset(0), { passive: true });
 
+		// After a click-jump the page scrolls under a still pointer, which sweeps across other
+		// skills: ignore hovers for a few seconds so they don't slide or replace the highlights.
+		const HOVER_PAUSE_MS = 5000;
+		let hoverPausedUntil = 0;
+
 		const jump = (ids: string[], phrases: string[] = []) => {
+			hoverPausedUntil = performance.now() + HOVER_PAUSE_MS;
 			setOffset(0, false); // scroll to the real position, not the slid one
 			const els = ids.map(entry).filter(Boolean) as HTMLDetailsElement[];
 			if (!els.length) return;
@@ -281,7 +287,9 @@ const { groups, class: className = '', compact = false } = Astro.props;
 		};
 
 		linked.forEach((b) => {
-			b.addEventListener('pointerenter', () => canHover.matches && preview(b));
+			b.addEventListener('pointerenter', () => {
+				if (canHover.matches && performance.now() >= hoverPausedUntil) preview(b);
+			});
 			b.addEventListener('focus', () => preview(b));
 			b.addEventListener('click', () => jump(proofOf(b), evidenceOf(b)));
 		});
